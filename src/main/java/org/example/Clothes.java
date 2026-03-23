@@ -9,12 +9,14 @@ public class Clothes {
     private String name;
     private String size;
     private double price;
+    private String color;
 
     // Конструктор з параметрами
-    public Clothes(String name, String size, double price) {
+    public Clothes(String name, String size, double price, String color) {
         this.name = name;
         this.size = size;
         this.price = price;
+        this.color = color;
     }
 
     // Гетери та сетери
@@ -42,6 +44,14 @@ public class Clothes {
         this.price = price;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     // Метод toString()
     @Override
     public String toString() {
@@ -49,6 +59,7 @@ public class Clothes {
                 "name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
+                ", color='" + color + '\'' +
                 '}';
     }
 
@@ -60,6 +71,7 @@ public class Clothes {
         Clothes clothes = (Clothes) o;
         return Double.compare(clothes.price, price) == 0 &&
                 Objects.equals(name, clothes.name) &&
-                Objects.equals(size, clothes.size);
+                Objects.equals(size, clothes.size) &&
+                Objects.equals(color, clothes.color);
     }
 }
