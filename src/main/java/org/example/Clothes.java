@@ -3,18 +3,21 @@ package org.example;
 import java.util.Objects;
 
 /**
- * Клас, що описує одяг
+ * Клас, що описує одяг.
+ * Містить перевірку вхідних даних (валідацію).
  */
 public class Clothes {
     private String name;
     private String size;
     private double price;
+    private String color;
 
     // Конструктор з параметрами
-    public Clothes(String name, String size, double price) {
-        this.name = name;
-        this.size = size;
-        this.price = price;
+    public Clothes(String name, String size, double price, String color) {
+        setName(name);
+        setSize(size);
+        setPrice(price);
+        setColor(color);
     }
 
     // Гетери та сетери
@@ -23,6 +26,9 @@ public class Clothes {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Назва не може бути порожньою.");
+        }
         this.name = name;
     }
 
@@ -31,7 +37,22 @@ public class Clothes {
     }
 
     public void setSize(String size) {
-        this.size = size;
+        if (size == null || size.trim().isEmpty()) {
+            throw new IllegalArgumentException("Розмір не може бути порожнім.");
+        }
+        // Очищаємо від пробілів і переводимо у верхній регістр
+        String formattedSize = size.trim().toUpperCase();
+
+        if (!formattedSize.equals("S") &&
+                !formattedSize.equals("M") &&
+                !formattedSize.equals("L") &&
+                !formattedSize.equals("XL") &&
+                !formattedSize.equals("XXL")) {
+
+            throw new IllegalArgumentException("Некоректний розмір! Дозволені значення: S, M, L, XL, XXL.");
+        }
+
+        this.size = formattedSize;
     }
 
     public double getPrice() {
@@ -39,7 +60,21 @@ public class Clothes {
     }
 
     public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Ціна не може бути від'ємною.");
+        }
         this.price = price;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        if (color == null || color.trim().isEmpty()) {
+            throw new IllegalArgumentException("Колір не може бути порожнім.");
+        }
+        this.color = color;
     }
 
     // Метод toString()
@@ -49,6 +84,7 @@ public class Clothes {
                 "name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
+                ", color='" + color + '\'' +
                 '}';
     }
 
@@ -60,6 +96,7 @@ public class Clothes {
         Clothes clothes = (Clothes) o;
         return Double.compare(clothes.price, price) == 0 &&
                 Objects.equals(name, clothes.name) &&
-                Objects.equals(size, clothes.size);
+                Objects.equals(size, clothes.size) &&
+                Objects.equals(color, clothes.color);
     }
 }
