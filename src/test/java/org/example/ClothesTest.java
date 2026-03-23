@@ -34,5 +34,10 @@ public class ClothesTest {
         assertThrows(IllegalArgumentException.class,()->{item.setSize("");});
         assertThrows(IllegalArgumentException.class,()->{item.setSize("B");});
         assertThrows(IllegalArgumentException.class,()->{item.setPrice(-1);});
+
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("","M",456.45,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх","F",456.45,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх","M",-546,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх","M",456.45,"");});
     }
 }
