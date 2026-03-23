@@ -3,75 +3,99 @@ package org.example;
 import java.util.Scanner;
 
 /**
- * Клас для тестування роботи з масивом об'єктів Clothes
+ * Головний клас програми (драйвер), що реалізує консольне меню.
+ * Забезпечує взаємодію з користувачем та обробку винятків при введенні даних.
  */
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
         int count = 0;
 
-        // Перевірка введення кількості (має бути ціле число > 0)
+        // Запит розміру масиву з використанням try-catch
         while (true) {
             System.out.print("Введіть кількість елементів (одягу) для створення: ");
-            if (scanner.hasNextInt()) {
-                count = scanner.nextInt();
+            try {
+                count = Integer.parseInt(scanner.nextLine().trim());
                 if (count > 0) {
                     break;
                 } else {
                     System.out.println("Помилка: кількість має бути більшою за нуль.");
                 }
-            } else {
+            } catch (NumberFormatException e) {
                 System.out.println("Помилка: потрібно ввести ціле число (наприклад, 3).");
-                scanner.next();
             }
         }
-
-        // Очищення буфера після введення числа
-        scanner.nextLine();
 
         // Створення масиву об'єктів
         Clothes[] clothes_array = new Clothes[count];
+        int currentIndex = 0;
+        boolean running = true;
 
-        // Заповнення масиву даними з клавіатури
-        for (int i = 0; i < count; i++) {
-            System.out.println("\nВведення даних для одягу #" + (i + 1) + ":");
+        // Головне меню програми
+        while (running) {
+            System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
+            System.out.println("1. Створити новий об'єкт (додати одяг)");
+            System.out.println("2. Вивести інформацію про всі об'єкти");
+            System.out.println("3. Завершити роботу");
+            System.out.print("Оберіть дію (1-3): ");
 
-            System.out.print("Назва: ");
-            String name = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
-            System.out.print("Розмір (S, M, L тощо): ");
-            String size = scanner.nextLine();
-
-            double price = 0;
-
-            // Перевірка введення ціни (має бути число >= 0)
-            while (true) {
-                System.out.print("Ціна (використовуйте кому, наприклад 199,99): ");
-                if (scanner.hasNextDouble()) {
-                    price = scanner.nextDouble();
-                    if (price >= 0) {
+            switch (choice) {
+                case "1":
+                    if (currentIndex >= clothes_array.length) {
+                        System.out.println("Помилка: Шафа вже повна! Ви не можете додати більше речей.");
                         break;
-                    } else {
-                        System.out.println("Помилка: ціна не може бути від'ємною.");
                     }
-                } else {
-                    System.out.println("Помилка: введіть коректне число.");
-                    scanner.next();
-                }
+
+                    System.out.println("\nВведення даних для одягу #" + (currentIndex + 1) + ":");
+
+                    // Блок try-catch для перехоплення помилок валідації з класу Clothes
+                    try {
+                        System.out.print("Назва: ");
+                        String name = scanner.nextLine();
+
+                        System.out.print("Розмір (S, M, L, XL, XXL): ");
+                        String size = scanner.nextLine();
+
+                        // Додано запит нового поля color
+                        System.out.print("Колір: ");
+                        String color = scanner.nextLine();
+
+                        System.out.print("Ціна (використовуйте крапку, наприклад 199.99): ");
+                        double price = Double.parseDouble(scanner.nextLine().trim());
+
+                        // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
+                        clothes_array[currentIndex] = new Clothes(name, size, price, color);
+                        currentIndex++;
+                        System.out.println("Одяг успішно додано!");
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("Помилка вводу: Ціна має бути коректним числом!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Помилка збереження даних: " + e.getMessage());
+                    }
+                    break;
+
+                case "2":
+                    System.out.println("\n--- Ваша шафа ---");
+                    if (currentIndex == 0) {
+                        System.out.println("Поки що немає жодної речі.");
+                    } else {
+                        for (int i = 0; i < currentIndex; i++) {
+                            System.out.println((i + 1) + ". " + clothes_array[i].toString());
+                        }
+                    }
+                    break;
+
+                case "3":
+                    System.out.println("Роботу завершено. До побачення!");
+                    running = false;
+                    break;
+
+                default:
+                    System.out.println("Помилка: Некоректний вибір. Введіть 1, 2 або 3.");
             }
-
-            // Очищення буфера після введення числа
-            scanner.nextLine();
-
-            // Ініціалізація об'єкта та запис у масив
-            clothes_array[i] = new Clothes(name, size, price);
-        }
-
-        // Виведення інформації про всі створені об'єкти
-        System.out.println("\n--- Створені об'єкти ---");
-        for (Clothes item : clothes_array) {
-            System.out.println(item.toString());
         }
 
         scanner.close();

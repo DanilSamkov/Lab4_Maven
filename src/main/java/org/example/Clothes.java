@@ -40,7 +40,19 @@ public class Clothes {
         if (size == null || size.trim().isEmpty()) {
             throw new IllegalArgumentException("Розмір не може бути порожнім.");
         }
-        this.size = size;
+        // Очищаємо від пробілів і переводимо у верхній регістр
+        String formattedSize = size.trim().toUpperCase();
+
+        if (!formattedSize.equals("S") &&
+                !formattedSize.equals("M") &&
+                !formattedSize.equals("L") &&
+                !formattedSize.equals("XL") &&
+                !formattedSize.equals("XXL")) {
+
+            throw new IllegalArgumentException("Некоректний розмір! Дозволені значення: S, M, L, XL, XXL.");
+        }
+
+        this.size = formattedSize;
     }
 
     public double getPrice() {
