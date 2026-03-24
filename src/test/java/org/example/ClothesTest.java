@@ -54,4 +54,30 @@ public class ClothesTest {
         assertThrows(IllegalArgumentException.class,()->{new Clothes(null);});
     }
 
+    @Test
+    void polymorphismTest() {
+        Clothes pants = new Pants("Брюки", Size.M, 1500.0, "Чорний");
+        Clothes shirt = new Shirts("Оксфорд", Size.L, 1200.0, "Білий");
+
+        assertNotNull(pants);
+        assertNotNull(shirt);
+
+        assertTrue(pants.toString().contains("Штани"));
+        assertTrue(shirt.toString().contains("Сорочка"));
+    }
+
+    @Test
+    void DerivedClassesCopyConstructorsTest() {
+        Pants originalPants = new Pants("Карго", Size.L, 1200.0, "Оливковий");
+        Pants copiedPants = new Pants(originalPants);
+
+        assertEquals(originalPants.getName(), copiedPants.getName());
+        assertTrue(copiedPants.toString().contains("Штани"));
+
+        Shirts originalShirt = new Shirts("Поло", Size.S, 900.0, "Блакитний");
+        Shirts copiedShirt = new Shirts(originalShirt);
+
+        assertEquals(originalShirt.getName(), copiedShirt.getName());
+        assertTrue(copiedShirt.toString().contains("Сорочка"));
+    }
 }
