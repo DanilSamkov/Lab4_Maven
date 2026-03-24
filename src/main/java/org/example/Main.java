@@ -120,7 +120,14 @@ public class Main {
                         Clothes original = clothesList.get(indexToCopy);
 
                         // Використання конструктору копіювання
-                        Clothes copy = new Clothes(original);
+                        Clothes copy = null;
+                        if (original instanceof Pants) {
+                            copy = new Pants((Pants) original);
+                        } else if (original instanceof Shirts) {
+                            copy = new Shirts((Shirts) original);
+                        } else {
+                            copy = new Clothes(original);
+                        }
 
                         clothesList.add(copy);
 
