@@ -8,16 +8,34 @@ import java.util.Objects;
  */
 public class Clothes {
     private String name;
-    private String size;
+    private Size size;
     private double price;
     private String color;
+    private static int totalClothes = 0;
 
-    // Конструктор з параметрами
-    public Clothes(String name, String size, double price, String color) {
+    /**
+     * Основний конструктор.
+     */
+    public Clothes(String name, Size size, double price, String color) {
         setName(name);
         setSize(size);
         setPrice(price);
         setColor(color);
+        totalClothes++;
+    }
+    /**
+     * Конструктор копіювання.
+     */
+    public Clothes(Clothes other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
+        }
+
+        this.name = other.name;
+        this.size = other.size;
+        this.price = other.price;
+        this.color = other.color;
+        totalClothes++;
     }
 
     // Гетери та сетери
@@ -32,27 +50,18 @@ public class Clothes {
         this.name = name;
     }
 
-    public String getSize() {
+    public Size getSize() {
         return size;
     }
-
-    public void setSize(String size) {
-        if (size == null || size.trim().isEmpty()) {
-            throw new IllegalArgumentException("Розмір не може бути порожнім.");
-        }
-        // Очищаємо від пробілів і переводимо у верхній регістр
-        String formattedSize = size.trim().toUpperCase();
-
-        if (!formattedSize.equals("S") &&
-                !formattedSize.equals("M") &&
-                !formattedSize.equals("L") &&
-                !formattedSize.equals("XL") &&
-                !formattedSize.equals("XXL")) {
-
-            throw new IllegalArgumentException("Некоректний розмір! Дозволені значення: S, M, L, XL, XXL.");
+    /**
+     * Встановлення розміру (enum)
+     */
+    public void setSize(Size size) {
+        if (size == null) {
+            throw new IllegalArgumentException("Розмір не може бути порожнім (null).");
         }
 
-        this.size = formattedSize;
+        this.size = size;
     }
 
     public double getPrice() {
@@ -75,6 +84,10 @@ public class Clothes {
             throw new IllegalArgumentException("Колір не може бути порожнім.");
         }
         this.color = color;
+    }
+
+    public static int getTotalClothes() {
+        return totalClothes;
     }
 
     // Метод toString()

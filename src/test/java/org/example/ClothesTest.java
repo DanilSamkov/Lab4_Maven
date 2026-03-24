@@ -9,35 +9,58 @@ public class ClothesTest {
     @Test
     void succesfullClothCreation(){
 
-        Clothes item = new Clothes("Футболка", "XXL", 250.50, "Чорний");
+        Clothes item = new Clothes("Футболка", Size.XXL, 250.50, "Чорний");
 
         assertNotNull(item);
 
         assertEquals("Футболка", item.getName());
-        assertEquals("XXL", item.getSize());
+        assertEquals(Size.XXL, item.getSize());
         assertEquals("Чорний", item.getColor());
         assertEquals(250.50, item.getPrice());
 
         item.setPrice(450.0);
-        item.setSize("XL");
+        item.setSize(Size.XL);
 
         assertEquals(450.0, item.getPrice());
-        assertEquals("XL", item.getSize());
+        assertEquals(Size.XL, item.getSize());
     }
 
     @Test
     void setIllegalExceptionsTest(){
-        Clothes item = new Clothes("Джинси", "S", 900.25, "Синій");
+        Clothes item = new Clothes("Джинси", Size.S, 900.25, "Синій");
 
         assertThrows(IllegalArgumentException.class,()->{item.setName("");});
         assertThrows(IllegalArgumentException.class,()->{item.setColor("");});
-        assertThrows(IllegalArgumentException.class,()->{item.setSize("");});
-        assertThrows(IllegalArgumentException.class,()->{item.setSize("B");});
+        assertThrows(IllegalArgumentException.class,()->{item.setSize(null);});
         assertThrows(IllegalArgumentException.class,()->{item.setPrice(-1);});
 
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("","M",456.45,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх","F",456.45,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх","M",-546,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх","M",456.45,"");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("",Size.M,456.45,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх",null,456.45,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх",Size.M,-546,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх",Size.M,456.45,"");});
+    }
+
+    @Test
+    void copyConstructorTest() {
+        Clothes original = new Clothes("Светр", Size.L, 850.0, "Сірий");
+        Clothes copy = new Clothes(original);
+
+        assertNotNull(copy);
+        assertEquals(original.getName(), copy.getName());
+        assertEquals(original.getSize(), copy.getSize());
+        assertEquals(original.getPrice(), copy.getPrice());
+        assertEquals(original.getColor(), copy.getColor());
+
+        assertThrows(IllegalArgumentException.class,()->{new Clothes(null);});
+    }
+
+    @Test
+    void staticCounterTest() {
+        int initialCount = Clothes.getTotalClothes();
+
+        new Clothes("Шкарпетки", Size.S, 50.0, "Білий");
+        new Clothes("Куртка", Size.XL, 1500.0, "Чорний");
+
+        assertEquals(initialCount + 2, Clothes.getTotalClothes());
     }
 }

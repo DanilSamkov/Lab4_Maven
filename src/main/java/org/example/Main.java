@@ -11,9 +11,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int count = 0;
 
-        // Запит розміру масиву з використанням try-catch
+        // Запит розміру шафи
         while (true) {
-            System.out.print("Введіть кількість елементів (одягу) для створення: ");
+            System.out.print("Введіть кількість елементів одягу для створення (об'єм шафи): ");
             try {
                 count = Integer.parseInt(scanner.nextLine().trim());
                 if (count > 0) {
@@ -26,9 +26,8 @@ public class Main {
             }
         }
 
-        // Створення масиву об'єктів
-        Clothes[] clothes_array = new Clothes[count];
-        int currentIndex = 0;
+        // Створення шафи
+        Wardrobe wardrobe = new Wardrobe(count);
         boolean running = true;
 
         // Головне меню програми
@@ -36,19 +35,20 @@ public class Main {
             System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
             System.out.println("1. Створити новий об'єкт (додати одяг)");
             System.out.println("2. Вивести інформацію про всі об'єкти");
-            System.out.println("3. Завершити роботу");
-            System.out.print("Оберіть дію (1-3): ");
+            System.out.println("3. Скопіювати існуючий об'єкт");
+            System.out.println("4. Завершити роботу");
+            System.out.print("Оберіть дію (1-4): ");
 
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1":
-                    if (currentIndex >= clothes_array.length) {
+                    if (wardrobe.isFull()) {
                         System.out.println("Помилка: Шафа вже повна! Ви не можете додати більше речей.");
                         break;
                     }
 
-                    System.out.println("\nВведення даних для одягу #" + (currentIndex + 1) + ":");
+                    System.out.println("\nВведення даних для одягу:");
 
                     // Блок try-catch для перехоплення помилок валідації з класу Clothes
                     try {
@@ -56,7 +56,14 @@ public class Main {
                         String name = scanner.nextLine();
 
                         System.out.print("Розмір (S, M, L, XL, XXL): ");
-                        String size = scanner.nextLine();
+                        String sizeInput = scanner.nextLine().trim().toUpperCase();
+
+                        Size sizeEnum;
+                        try {
+                            sizeEnum = Size.valueOf(sizeInput);
+                        } catch (IllegalArgumentException ex) {
+                            throw new IllegalArgumentException("Некоректний розмір! Дозволені значення: S, M, L, XL, XXL.");
+                        }
 
                         // Додано запит нового поля color
                         System.out.print("Колір: ");
@@ -66,9 +73,13 @@ public class Main {
                         double price = Double.parseDouble(scanner.nextLine().trim());
 
                         // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
-                        clothes_array[currentIndex] = new Clothes(name, size, price, color);
-                        currentIndex++;
+                        Clothes newItem = new Clothes(name, sizeEnum, price, color);
+                        // АГРЕГАЦІЯ: Передаємо готовий об'єкт у шафу
+                        wardrobe.addClothes(newItem);
+
                         System.out.println("Одяг успішно додано!");
+
+                        System.out.println("Статистика: всього створено об'єктів Clothes: " + Clothes.getTotalClothes());
 
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка вводу: Ціна має бути коректним числом!");
@@ -79,22 +90,53 @@ public class Main {
 
                 case "2":
                     System.out.println("\n--- Ваша шафа ---");
-                    if (currentIndex == 0) {
-                        System.out.println("Поки що немає жодної речі.");
-                    } else {
-                        for (int i = 0; i < currentIndex; i++) {
-                            System.out.println((i + 1) + ". " + clothes_array[i].toString());
-                        }
-                    }
+                    wardrobe.displayAll();
+                    System.out.println("Загальна кількість створених об'єктів Clothes: " + Clothes.getTotalClothes());
                     break;
 
                 case "3":
+                    if (wardrobe.getCurrentCount() == 0) {
+                        System.out.println("Шафа порожня! Немає чого копіювати.");
+                        break;
+                    }
+                    if (wardrobe.isFull()) {
+                        System.out.println("Шафа повна! Немає місця для копії.");
+                        break;
+                    }
+
+                    System.out.println("\n--- Доступні речі для копіювання ---");
+                    wardrobe.displayAll();
+                    System.out.print("Введіть номер речі, яку хочете скопіювати: ");
+
+                    try {
+                        int indexToCopy = Integer.parseInt(scanner.nextLine().trim()) - 1;
+
+                        Clothes original = wardrobe.getClothes(indexToCopy);
+
+                        // Використання конструктору копіювання
+                        Clothes copy = new Clothes(original);
+
+                        wardrobe.addClothes(copy);
+
+                        System.out.println("Річ успішно скопійовано!");
+                        System.out.println("Статистика: всього створено екземплярів Clothes у пам'яті: " + Clothes.getTotalClothes());
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("Помилка: введіть коректне число.");
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Помилка: " + e.getMessage());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Помилка копіювання: " + e.getMessage());
+                    }
+                    break;
+
+                case "4":
                     System.out.println("Роботу завершено. До побачення!");
                     running = false;
                     break;
 
                 default:
-                    System.out.println("Помилка: Некоректний вибір. Введіть 1, 2 або 3.");
+                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 4.");
             }
         }
 
