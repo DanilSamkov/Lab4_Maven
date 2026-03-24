@@ -54,13 +54,4 @@ public class ClothesTest {
         assertThrows(IllegalArgumentException.class,()->{new Clothes(null);});
     }
 
-    @Test
-    void staticCounterTest() {
-        int initialCount = Clothes.getTotalClothes();
-
-        new Clothes("Шкарпетки", Size.S, 50.0, "Білий");
-        new Clothes("Куртка", Size.XL, 1500.0, "Чорний");
-
-        assertEquals(initialCount + 2, Clothes.getTotalClothes());
-    }
 }

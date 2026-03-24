@@ -79,7 +79,6 @@ public class Main {
 
                         System.out.println("Одяг успішно додано!");
 
-                        System.out.println("Статистика: всього створено об'єктів Clothes: " + Clothes.getTotalClothes());
 
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка вводу: Ціна має бути коректним числом!");
@@ -91,7 +90,6 @@ public class Main {
                 case "2":
                     System.out.println("\n--- Ваша шафа ---");
                     wardrobe.displayAll();
-                    System.out.println("Загальна кількість створених об'єктів Clothes: " + Clothes.getTotalClothes());
                     break;
 
                 case "3":
@@ -119,7 +117,6 @@ public class Main {
                         wardrobe.addClothes(copy);
 
                         System.out.println("Річ успішно скопійовано!");
-                        System.out.println("Статистика: всього створено екземплярів Clothes у пам'яті: " + Clothes.getTotalClothes());
 
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка: введіть коректне число.");

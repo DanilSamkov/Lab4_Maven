@@ -11,7 +11,6 @@ public class Clothes {
     private Size size;
     private double price;
     private String color;
-    private static int totalClothes = 0;
 
     /**
      * Основний конструктор.
@@ -21,7 +20,6 @@ public class Clothes {
         setSize(size);
         setPrice(price);
         setColor(color);
-        totalClothes++;
     }
     /**
      * Конструктор копіювання.
@@ -35,7 +33,6 @@ public class Clothes {
         this.size = other.size;
         this.price = other.price;
         this.color = other.color;
-        totalClothes++;
     }
 
     // Гетери та сетери
@@ -86,9 +83,6 @@ public class Clothes {
         this.color = color;
     }
 
-    public static int getTotalClothes() {
-        return totalClothes;
-    }
 
     // Метод toString()
     @Override
