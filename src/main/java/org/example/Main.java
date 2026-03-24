@@ -11,9 +11,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int count = 0;
 
-        // Запит розміру масиву з використанням try-catch
+        // Запит розміру шафи
         while (true) {
-            System.out.print("Введіть кількість елементів (одягу) для створення: ");
+            System.out.print("Введіть кількість елементів одягу для створення (об'єм шафи): ");
             try {
                 count = Integer.parseInt(scanner.nextLine().trim());
                 if (count > 0) {
@@ -26,9 +26,8 @@ public class Main {
             }
         }
 
-        // Створення масиву об'єктів
-        Clothes[] clothes_array = new Clothes[count];
-        int currentIndex = 0;
+        // Створення шафи
+        Wardrobe wardrobe = new Wardrobe(count);
         boolean running = true;
 
         // Головне меню програми
@@ -43,12 +42,12 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    if (currentIndex >= clothes_array.length) {
+                    if (wardrobe.isFull()) {
                         System.out.println("Помилка: Шафа вже повна! Ви не можете додати більше речей.");
                         break;
                     }
 
-                    System.out.println("\nВведення даних для одягу #" + (currentIndex + 1) + ":");
+                    System.out.println("\nВведення даних для одягу:");
 
                     // Блок try-catch для перехоплення помилок валідації з класу Clothes
                     try {
@@ -66,8 +65,10 @@ public class Main {
                         double price = Double.parseDouble(scanner.nextLine().trim());
 
                         // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
-                        clothes_array[currentIndex] = new Clothes(name, size, price, color);
-                        currentIndex++;
+                        Clothes newItem = new Clothes(name, size, price, color);
+                        // АГРЕГАЦІЯ: Передаємо готовий об'єкт у шафу
+                        wardrobe.addClothes(newItem);
+
                         System.out.println("Одяг успішно додано!");
 
                         System.out.println("Статистика: всього створено об'єктів Clothes: " + Clothes.getTotalClothes());
@@ -81,14 +82,8 @@ public class Main {
 
                 case "2":
                     System.out.println("\n--- Ваша шафа ---");
+                    wardrobe.displayAll();
                     System.out.println("Загальна кількість створених об'єктів Clothes: " + Clothes.getTotalClothes());
-                    if (currentIndex == 0) {
-                        System.out.println("Поки що немає жодної речі.");
-                    } else {
-                        for (int i = 0; i < currentIndex; i++) {
-                            System.out.println((i + 1) + ". " + clothes_array[i].toString());
-                        }
-                    }
                     break;
 
                 case "3":
