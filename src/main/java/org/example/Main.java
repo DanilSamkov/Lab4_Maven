@@ -29,7 +29,19 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    System.out.println("\nВведення даних для одягу:");
+                    System.out.println("\nЯкий саме одяг ви хочете додати?");
+                    System.out.println("1 - Звичайний одяг");
+                    System.out.println("2 - Штани");
+                    System.out.println("3 - Сорочка");
+                    System.out.print("Ваш вибір (1-3): ");
+                    String typeChoice = scanner.nextLine().trim();
+
+                    if (!typeChoice.equals("1") && !typeChoice.equals("2") && !typeChoice.equals("3")) {
+                        System.out.println("Помилка: Невідомий тип одягу. Повернення до головного меню.");
+                        break;
+                    }
+
+                    System.out.println("\nВведення даних:");
 
                     // Блок try-catch для перехоплення помилок валідації з класу Clothes
                     try {
@@ -54,7 +66,19 @@ public class Main {
                         double price = Double.parseDouble(scanner.nextLine().trim());
 
                         // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
-                        Clothes newItem = new Clothes(name, sizeEnum, price, color);
+                        Clothes newItem = null;
+
+                        switch (typeChoice) {
+                            case "1":
+                                newItem = new Clothes(name, sizeEnum, price, color);
+                                break;
+                            case "2":
+                                newItem = new Pants(name, sizeEnum, price, color);
+                                break;
+                            case "3":
+                                newItem = new Shirts(name, sizeEnum, price, color);
+                                break;
+                        }
 
                         clothesList.add(newItem);
                         System.out.println("Одяг успішно додано!");
