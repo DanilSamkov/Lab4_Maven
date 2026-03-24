@@ -70,6 +70,8 @@ public class Main {
                         currentIndex++;
                         System.out.println("Одяг успішно додано!");
 
+                        System.out.println("Статистика: всього створено об'єктів Clothes: " + Clothes.getTotalClothes());
+
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка вводу: Ціна має бути коректним числом!");
                     } catch (IllegalArgumentException e) {
@@ -79,6 +81,7 @@ public class Main {
 
                 case "2":
                     System.out.println("\n--- Ваша шафа ---");
+                    System.out.println("Загальна кількість створених об'єктів Clothes: " + Clothes.getTotalClothes());
                     if (currentIndex == 0) {
                         System.out.println("Поки що немає жодної речі.");
                     } else {
