@@ -12,12 +12,27 @@ public class Clothes {
     private double price;
     private String color;
 
-    // Конструктор з параметрами
+    /**
+     * Основний конструктор.
+     */
     public Clothes(String name, String size, double price, String color) {
         setName(name);
         setSize(size);
         setPrice(price);
         setColor(color);
+    }
+    /**
+     * Конструктор копіювання.
+     */
+    public Clothes(Clothes other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
+        }
+
+        this.name = other.name;
+        this.size = other.size;
+        this.price = other.price;
+        this.color = other.color;
     }
 
     // Гетери та сетери
