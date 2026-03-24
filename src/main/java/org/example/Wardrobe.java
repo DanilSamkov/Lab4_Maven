@@ -48,4 +48,21 @@ public class Wardrobe {
     public boolean isFull() {
         return currentIndex >= items.length;
     }
+
+    /**
+     * Повертає кількість речей у шафі.
+     */
+    public int getCurrentCount() {
+        return currentIndex;
+    }
+
+    /**
+     * Повертає об'єкт одягу.
+     */
+    public Clothes getClothes(int index) {
+        if (index < 0 || index >= currentIndex) {
+            throw new IndexOutOfBoundsException("Некоректний номер речі.");
+        }
+        return items[index];
+    }
 }

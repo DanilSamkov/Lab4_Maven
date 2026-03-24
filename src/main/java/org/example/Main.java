@@ -35,8 +35,9 @@ public class Main {
             System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
             System.out.println("1. Створити новий об'єкт (додати одяг)");
             System.out.println("2. Вивести інформацію про всі об'єкти");
-            System.out.println("3. Завершити роботу");
-            System.out.print("Оберіть дію (1-3): ");
+            System.out.println("3. Скопіювати існуючий об'єкт");
+            System.out.println("4. Завершити роботу");
+            System.out.print("Оберіть дію (1-4): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -94,12 +95,48 @@ public class Main {
                     break;
 
                 case "3":
+                    if (wardrobe.getCurrentCount() == 0) {
+                        System.out.println("Шафа порожня! Немає чого копіювати.");
+                        break;
+                    }
+                    if (wardrobe.isFull()) {
+                        System.out.println("Шафа повна! Немає місця для копії.");
+                        break;
+                    }
+
+                    System.out.println("\n--- Доступні речі для копіювання ---");
+                    wardrobe.displayAll();
+                    System.out.print("Введіть номер речі, яку хочете скопіювати: ");
+
+                    try {
+                        int indexToCopy = Integer.parseInt(scanner.nextLine().trim()) - 1;
+
+                        Clothes original = wardrobe.getClothes(indexToCopy);
+
+                        // Використання конструктору копіювання
+                        Clothes copy = new Clothes(original);
+
+                        wardrobe.addClothes(copy);
+
+                        System.out.println("Річ успішно скопійовано!");
+                        System.out.println("Статистика: всього створено екземплярів Clothes у пам'яті: " + Clothes.getTotalClothes());
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("Помилка: введіть коректне число.");
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Помилка: " + e.getMessage());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Помилка копіювання: " + e.getMessage());
+                    }
+                    break;
+
+                case "4":
                     System.out.println("Роботу завершено. До побачення!");
                     running = false;
                     break;
 
                 default:
-                    System.out.println("Помилка: Некоректний вибір. Введіть 1, 2 або 3.");
+                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 4.");
             }
         }
 
