@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -9,25 +11,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int count = 0;
 
-        // Запит розміру шафи
-        while (true) {
-            System.out.print("Введіть кількість елементів одягу для створення (об'єм шафи): ");
-            try {
-                count = Integer.parseInt(scanner.nextLine().trim());
-                if (count > 0) {
-                    break;
-                } else {
-                    System.out.println("Помилка: кількість має бути більшою за нуль.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Помилка: потрібно ввести ціле число (наприклад, 3).");
-            }
-        }
-
-        // Створення шафи
-        Wardrobe wardrobe = new Wardrobe(count);
+        // ArrayList
+        List<Clothes> clothesList = new ArrayList<>();
         boolean running = true;
 
         // Головне меню програми
@@ -43,11 +29,6 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    if (wardrobe.isFull()) {
-                        System.out.println("Помилка: Шафа вже повна! Ви не можете додати більше речей.");
-                        break;
-                    }
-
                     System.out.println("\nВведення даних для одягу:");
 
                     // Блок try-catch для перехоплення помилок валідації з класу Clothes
@@ -74,9 +55,8 @@ public class Main {
 
                         // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
                         Clothes newItem = new Clothes(name, sizeEnum, price, color);
-                        // АГРЕГАЦІЯ: Передаємо готовий об'єкт у шафу
-                        wardrobe.addClothes(newItem);
 
+                        clothesList.add(newItem);
                         System.out.println("Одяг успішно додано!");
 
 
@@ -89,32 +69,36 @@ public class Main {
 
                 case "2":
                     System.out.println("\n--- Ваша шафа ---");
-                    wardrobe.displayAll();
+                    if (clothesList.isEmpty()) {
+                        System.out.println("Список порожній.");
+                    } else {
+                        for (int i = 0; i < clothesList.size(); i++) {
+                            System.out.println((i + 1) + ". " + clothesList.get(i).toString());
+                        }
+                    }
                     break;
 
                 case "3":
-                    if (wardrobe.getCurrentCount() == 0) {
-                        System.out.println("Шафа порожня! Немає чого копіювати.");
-                        break;
-                    }
-                    if (wardrobe.isFull()) {
-                        System.out.println("Шафа повна! Немає місця для копії.");
+                    if (clothesList.isEmpty()) {
+                        System.out.println("Список порожній! Немає чого копіювати.");
                         break;
                     }
 
                     System.out.println("\n--- Доступні речі для копіювання ---");
-                    wardrobe.displayAll();
+                    for (int i = 0; i < clothesList.size(); i++) {
+                        System.out.println((i + 1) + ". " + clothesList.get(i).toString());
+                    }
                     System.out.print("Введіть номер речі, яку хочете скопіювати: ");
 
                     try {
                         int indexToCopy = Integer.parseInt(scanner.nextLine().trim()) - 1;
 
-                        Clothes original = wardrobe.getClothes(indexToCopy);
+                        Clothes original = clothesList.get(indexToCopy);
 
                         // Використання конструктору копіювання
                         Clothes copy = new Clothes(original);
 
-                        wardrobe.addClothes(copy);
+                        clothesList.add(copy);
 
                         System.out.println("Річ успішно скопійовано!");
 
