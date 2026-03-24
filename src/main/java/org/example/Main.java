@@ -55,7 +55,14 @@ public class Main {
                         String name = scanner.nextLine();
 
                         System.out.print("Розмір (S, M, L, XL, XXL): ");
-                        String size = scanner.nextLine();
+                        String sizeInput = scanner.nextLine().trim().toUpperCase();
+
+                        Size sizeEnum;
+                        try {
+                            sizeEnum = Size.valueOf(sizeInput);
+                        } catch (IllegalArgumentException ex) {
+                            throw new IllegalArgumentException("Некоректний розмір! Дозволені значення: S, M, L, XL, XXL.");
+                        }
 
                         // Додано запит нового поля color
                         System.out.print("Колір: ");
@@ -65,7 +72,7 @@ public class Main {
                         double price = Double.parseDouble(scanner.nextLine().trim());
 
                         // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
-                        Clothes newItem = new Clothes(name, size, price, color);
+                        Clothes newItem = new Clothes(name, sizeEnum, price, color);
                         // АГРЕГАЦІЯ: Передаємо готовий об'єкт у шафу
                         wardrobe.addClothes(newItem);
 
