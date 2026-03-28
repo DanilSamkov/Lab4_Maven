@@ -30,13 +30,21 @@ public class Main {
             switch (choice) {
                 case "1":
                     System.out.println("\nЯкий саме одяг ви хочете додати?");
+                    System.out.println("0 - Повернутися до головного меню (Відміна)");
                     System.out.println("1 - Звичайний одяг");
                     System.out.println("2 - Штани");
                     System.out.println("3 - Сорочка");
-                    System.out.print("Ваш вибір (1-3): ");
+                    System.out.println("4 - Шорти");
+                    System.out.println("5 - Сорочка-поло");
+                    System.out.print("Ваш вибір (0-5): ");
                     String typeChoice = scanner.nextLine().trim();
 
-                    if (!typeChoice.equals("1") && !typeChoice.equals("2") && !typeChoice.equals("3")) {
+                    if (typeChoice.equals("0")) {
+                        System.out.println("Створення скасовано. Повернення до меню...");
+                        break;
+                    }
+
+                    if (!typeChoice.matches("[1-5]")) {
                         System.out.println("Помилка: Невідомий тип одягу. Повернення до головного меню.");
                         break;
                     }
@@ -77,6 +85,18 @@ public class Main {
                                 break;
                             case "3":
                                 newItem = new Shirts(name, sizeEnum, price, color);
+                                break;
+                            case "4":
+                                System.out.print("Ці шорти підходять для плавання? (так/ні): ");
+                                String swimInput = scanner.nextLine().trim().toLowerCase();
+                                boolean isForSwimming = swimInput.equals("так") || swimInput.equals("yes");
+                                newItem = new Shorts(name, sizeEnum, price, color, isForSwimming);
+                                break;
+                            case "5":
+                                System.out.print("Чи є нагрудна кишеня? (так/ні): ");
+                                String pocketInput = scanner.nextLine().trim().toLowerCase();
+                                boolean hasPocket = pocketInput.equals("так") || pocketInput.equals("yes");
+                                newItem = new Polo(name, sizeEnum, price, color, hasPocket);
                                 break;
                         }
 
@@ -121,9 +141,13 @@ public class Main {
 
                         // Використання конструктору копіювання
                         Clothes copy = null;
-                        if (original instanceof Pants) {
+                        if (original instanceof Shorts) {
+                            copy = new Shorts((Shorts) original);
+                        } else if (original instanceof Pants) { // Перевірка батька після спадкоємця
                             copy = new Pants((Pants) original);
-                        } else if (original instanceof Shirts) {
+                        } else if (original instanceof Polo) {
+                            copy = new Polo((Polo) original);
+                        } else if (original instanceof Shirts) { // Перевірка батька після спадкоємця
                             copy = new Shirts((Shirts) original);
                         } else {
                             copy = new Clothes(original);
