@@ -141,9 +141,13 @@ public class Main {
 
                         // Використання конструктору копіювання
                         Clothes copy = null;
-                        if (original instanceof Pants) {
+                        if (original instanceof Shorts) {
+                            copy = new Shorts((Shorts) original);
+                        } else if (original instanceof Pants) { // Перевірка батька після спадкоємця
                             copy = new Pants((Pants) original);
-                        } else if (original instanceof Shirts) {
+                        } else if (original instanceof Polo) {
+                            copy = new Polo((Polo) original);
+                        } else if (original instanceof Shirts) { // Перевірка батька після спадкоємця
                             copy = new Shirts((Shirts) original);
                         } else {
                             copy = new Clothes(original);
