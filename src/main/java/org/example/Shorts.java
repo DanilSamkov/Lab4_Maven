@@ -7,6 +7,11 @@ public class Shorts extends Pants {
     private boolean isForSwimming;
 
     /**
+     * Порожній конструктор
+     */
+    public Shorts() {}
+
+    /**
      * Основний конструктор.
      */
     public Shorts(String name, Size size, double price, String color, boolean isForSwimming) {
