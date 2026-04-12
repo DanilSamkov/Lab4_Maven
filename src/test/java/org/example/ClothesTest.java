@@ -127,4 +127,59 @@ public class ClothesTest {
         assertEquals("Спортивне", loadedPolo.getName());
         assertTrue(loadedPolo.toString().contains("Без кишені"));
     }
+
+    private List<Clothes> getTestCollection() {
+        List<Clothes> list = new ArrayList<>();
+        list.add(new Clothes("Футболка біла", Size.M, 300.0, "Білий"));
+        list.add(new Clothes("Футболка чорна", Size.L, 350.0, "Чорний"));
+        list.add(new Pants("Джинси", Size.M, 1200.0, "Синій"));
+        list.add(new Shorts("Шорти пляжні", Size.S, 450.0, "Червоний", true));
+        list.add(new Polo("Поло", Size.XL, 800.0, "Зелений", false));
+        return list;
+    }
+
+    @Test
+    void searchByNameTest() {
+        List<Clothes> testList = getTestCollection();
+
+        List<Clothes> resultMultiple = SearchEngine.searchByName(testList, "Футболка");
+        assertEquals(2, resultMultiple.size());
+
+        List<Clothes> resultCaseInsensitive = SearchEngine.searchByName(testList, "ДЖИНСИ");
+        assertEquals(1, resultCaseInsensitive.size());
+        assertEquals("Джинси", resultCaseInsensitive.get(0).getName());
+
+        List<Clothes> resultEmpty = SearchEngine.searchByName(testList, "Капелюх");
+        assertTrue(resultEmpty.isEmpty());
+    }
+
+    @Test
+    void searchBySizeTest() {
+        List<Clothes> testList = getTestCollection();
+
+        List<Clothes> resultSizeM = SearchEngine.searchBySize(testList, Size.M);
+        assertEquals(2, resultSizeM.size());
+
+        List<Clothes> resultSizeXL = SearchEngine.searchBySize(testList, Size.XL);
+        assertEquals(1, resultSizeXL.size());
+        assertEquals("Поло", resultSizeXL.get(0).getName());
+
+        List<Clothes> resultSizeXXL = SearchEngine.searchBySize(testList, Size.XXL);
+        assertTrue(resultSizeXXL.isEmpty());
+    }
+
+    @Test
+    void searchByPriceRangeTest() {
+        List<Clothes> testList = getTestCollection();
+
+        List<Clothes> resultRange = SearchEngine.searchByPriceRange(testList, 300.0, 500.0);
+        assertEquals(3, resultRange.size()); // 300, 350, 450
+
+        List<Clothes> resultExact = SearchEngine.searchByPriceRange(testList, 1200.0, 1200.0);
+        assertEquals(1, resultExact.size());
+        assertEquals("Джинси", resultExact.get(0).getName());
+
+        List<Clothes> resultEmpty = SearchEngine.searchByPriceRange(testList, 5000.0, 10000.0);
+        assertTrue(resultEmpty.isEmpty());
+    }
 }

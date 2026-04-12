@@ -19,16 +19,84 @@ public class Main {
         //Головне меню програми
         while (running) {
             System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
-            System.out.println("1. Створити новий об'єкт (додати одяг)");
-            System.out.println("2. Вивести інформацію про всі об'єкти");
-            System.out.println("3. Скопіювати існуючий об'єкт");
-            System.out.println("4. Завершити роботу");
-            System.out.print("Оберіть дію (1-4): ");
+            System.out.println("1. Пошук об'єкта");
+            System.out.println("2. Створити новий об'єкт (додати одяг)");
+            System.out.println("3. Вивести інформацію про всі об'єкти");
+            System.out.println("4. Скопіювати існуючий об'єкт");
+            System.out.println("5. Завершити роботу");
+            System.out.print("Оберіть дію (1-5): ");
 
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1":
+                    if (clothesList.isEmpty()) {
+                        System.out.println("Колекція порожня! Додайте об'єкти перед тим, як шукати.");
+                        break;
+                    }
+
+                    System.out.println("\n--- МЕНЮ ПОШУКУ ---");
+                    System.out.println("1. За назвою");
+                    System.out.println("2. За розміром");
+                    System.out.println("3. За ціновим діапазоном");
+                    System.out.println("0. Повернутися до головного меню");
+                    System.out.print("Оберіть критерій (0-3): ");
+
+                    String searchChoice = scanner.nextLine().trim();
+                    List<Clothes> results = new ArrayList<>();
+                    boolean performSearch = true;
+
+                    switch (searchChoice) {
+                        case "1":
+                            System.out.print("Введіть назву (або частину назви) для пошуку: ");
+                            String nameQuery = scanner.nextLine().trim();
+
+                            results = SearchEngine.searchByName(clothesList, nameQuery);
+                            break;
+                        case "2":
+                            System.out.print("Введіть розмір для пошуку (S, M, L, XL, XXL): ");
+                            String sizeStr = scanner.nextLine().trim().toUpperCase();
+                            try {
+                                Size targetSize = Size.valueOf(sizeStr);
+                                results = SearchEngine.searchBySize(clothesList, targetSize);
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Помилка: Невідомий розмір.");
+                                performSearch = false;
+                            }
+                            break;
+                        case "3":
+                            try {
+                                System.out.print("Введіть мінімальну ціну: ");
+                                double minPrice = Double.parseDouble(scanner.nextLine().trim());
+                                System.out.print("Введіть максимальну ціну: ");
+                                double maxPrice = Double.parseDouble(scanner.nextLine().trim());
+
+                                if (minPrice > maxPrice) {
+                                    System.out.println("Помилка: Мінімальна ціна не може бути більшою за максимальну.");
+                                    performSearch = false;
+                                } else {
+                                    results = SearchEngine.searchByPriceRange(clothesList, minPrice, maxPrice);
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Помилка: Некоректний формат числа.");
+                                performSearch = false;
+                            }
+                            break;
+                        case "0":
+                            System.out.println("Повернення до головного меню...");
+                            performSearch = false;
+                            break;
+                        default:
+                            System.out.println("Помилка: Некоректний вибір.");
+                            performSearch = false;
+                    }
+
+                    if (performSearch) {
+                        SearchEngine.printSearchResults(results);
+                    }
+                    break;
+                    
+                case "2":
                     System.out.println("\nЯкий саме одяг ви хочете додати?");
                     System.out.println("0 - Повернутися до головного меню (Відміна)");
                     System.out.println("1 - Звичайний одяг");
@@ -111,7 +179,7 @@ public class Main {
                     }
                     break;
 
-                case "2":
+                case "3":
                     System.out.println("\n--- Ваша шафа ---");
                     if (clothesList.isEmpty()) {
                         System.out.println("Список порожній.");
@@ -122,7 +190,7 @@ public class Main {
                     }
                     break;
 
-                case "3":
+                case "4":
                     if (clothesList.isEmpty()) {
                         System.out.println("Список порожній! Немає чого копіювати.");
                         break;
@@ -166,7 +234,7 @@ public class Main {
                     }
                     break;
 
-                case "4":
+                case "5":
                     ClothesStorage.saveClothes(clothesList);
                     System.out.println("Актуальні дані успішно збережено у файл input.json.");
                     System.out.println("Роботу завершено. До побачення!");
