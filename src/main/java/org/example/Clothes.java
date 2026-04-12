@@ -1,16 +1,36 @@
 package org.example;
 
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 
 /**
  * Клас, що описує одяг.
  * Містить перевірку вхідних даних (валідацію).
  */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Clothes.class, name = "clothes"),
+        @JsonSubTypes.Type(value = Pants.class, name = "pants"),
+        @JsonSubTypes.Type(value = Shirts.class, name = "shirts"),
+        @JsonSubTypes.Type(value = Shorts.class, name = "shorts"),
+        @JsonSubTypes.Type(value = Polo.class, name = "polo")
+})
 public class Clothes {
     private String name;
     private Size size;
     private double price;
     private String color;
+
+    /**
+     * Порожній конструктор
+     */
+    public Clothes() {}
 
     /**
      * Основний конструктор.
