@@ -12,11 +12,11 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // ArrayList
-        List<Clothes> clothesList = new ArrayList<>();
+        List<Clothes> clothesList = ClothesStorage.loadClothes();
         boolean running = true;
 
-        // Головне меню програми
+
+        //Головне меню програми
         while (running) {
             System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
             System.out.println("1. Створити новий об'єкт (додати одяг)");
@@ -167,6 +167,8 @@ public class Main {
                     break;
 
                 case "4":
+                    ClothesStorage.saveClothes(clothesList);
+                    System.out.println("Актуальні дані успішно збережено у файл input.json.");
                     System.out.println("Роботу завершено. До побачення!");
                     running = false;
                     break;

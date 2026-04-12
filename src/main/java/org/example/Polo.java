@@ -7,6 +7,11 @@ public class Polo extends Shirts {
     private boolean hasChestPocket;
 
     /**
+     * Порожній конструктор
+     */
+    public Polo() {}
+
+    /**
      * Основний конструктор.
      */
     public Polo(String name, Size size, double price, String color, boolean hasChestPocket) {
@@ -19,10 +24,10 @@ public class Polo extends Shirts {
      */
     public Polo(Polo other) {
         super(other);
-        this.hasChestPocket = other.hasChestPocket();
+        this.hasChestPocket = other.isChestPocket();
     }
 
-    public boolean hasChestPocket() {
+    public boolean isChestPocket() {
         return hasChestPocket;
     }
 

@@ -2,6 +2,9 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClothesTest {
@@ -59,11 +62,20 @@ public class ClothesTest {
         Clothes pants = new Pants("Брюки", Size.M, 1500.0, "Чорний");
         Clothes shirt = new Shirts("Оксфорд", Size.L, 1200.0, "Білий");
 
+        Clothes shorts = new Shorts("Пляжні", Size.M, 600.0, "Жовтий", true);
+        Clothes polo = new Polo("Кежуал", Size.L, 800.0, "Синій", false);
+
         assertNotNull(pants);
         assertNotNull(shirt);
 
+        assertNotNull(shorts);
+        assertNotNull(polo);
+
         assertTrue(pants.toString().contains("Штани"));
         assertTrue(shirt.toString().contains("Сорочка"));
+
+        assertTrue(shorts.toString().contains("Пляжні (для плавання)"));
+        assertTrue(polo.toString().contains("Без кишені"));
     }
 
     @Test
@@ -79,5 +91,40 @@ public class ClothesTest {
 
         assertEquals(originalShirt.getName(), copiedShirt.getName());
         assertTrue(copiedShirt.toString().contains("Сорочка"));
+
+        Shorts originalShorts = new Shorts("Бермуди", Size.M, 450.0, "Хакі", true);
+        Shorts copiedShorts = new Shorts(originalShorts);
+        assertEquals(originalShorts.isForSwimming(), copiedShorts.isForSwimming());
+
+        Polo originalPolo = new Polo("Теніска", Size.L, 750.0, "Білий", true);
+        Polo copiedPolo = new Polo(originalPolo);
+        assertTrue(copiedPolo.toString().contains("З нагрудною кишенею"));
+    }
+
+    @Test
+    void jsonStorageTest() {
+        List<Clothes> originalList = new ArrayList<>();
+        originalList.add(new Clothes("Куртка", Size.XL, 2500.0, "Чорний"));
+        originalList.add(new Shorts("Гавайські", Size.L, 450.0, "Червоний", true));
+        originalList.add(new Polo("Спортивне", Size.S, 650.0, "Зелений", false));
+
+        ClothesStorage.saveClothes(originalList);
+
+        List<Clothes> loadedList = ClothesStorage.loadClothes();
+
+        assertNotNull(loadedList);
+        assertEquals(originalList.size(), loadedList.size());
+
+        assertSame(loadedList.get(0).getClass(), Clothes.class);
+        assertSame(loadedList.get(1).getClass(), Shorts.class);
+        assertSame(loadedList.get(2).getClass(), Polo.class);
+
+        Shorts loadedShorts = (Shorts) loadedList.get(1);
+        assertEquals("Гавайські", loadedShorts.getName());
+        assertTrue(loadedShorts.isForSwimming());
+
+        Polo loadedPolo = (Polo) loadedList.get(2);
+        assertEquals("Спортивне", loadedPolo.getName());
+        assertTrue(loadedPolo.toString().contains("Без кишені"));
     }
 }

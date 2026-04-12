@@ -5,6 +5,11 @@ package org.example;
  */
 public class Shirts extends Clothes{
     /**
+     * Порожній конструктор
+     */
+    public Shirts() {}
+
+    /**
      * Основний конструктор.
      */
     public Shirts(String name, Size size, double price, String color) {
