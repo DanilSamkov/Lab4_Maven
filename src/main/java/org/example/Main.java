@@ -1,6 +1,5 @@
 package org.example;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        List<Clothes> clothesList = ClothesStorage.loadClothes();
+        Store store = ClothesStorage.loadStore();
         boolean running = true;
 
 
@@ -30,8 +29,8 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    if (clothesList.isEmpty()) {
-                        System.out.println("Колекція порожня! Додайте об'єкти перед тим, як шукати.");
+                    if (store.getItems().isEmpty()) {
+                        System.out.println("Магазин порожній! Додайте об'єкти перед тим, як шукати.");
                         break;
                     }
 
@@ -43,56 +42,46 @@ public class Main {
                     System.out.print("Оберіть критерій (0-3): ");
 
                     String searchChoice = scanner.nextLine().trim();
-                    List<Clothes> results = new ArrayList<>();
-                    boolean performSearch = true;
+                    List<StoreItem> results = null;
 
                     switch (searchChoice) {
                         case "1":
-                            System.out.print("Введіть назву (або частину назви) для пошуку: ");
-                            String nameQuery = scanner.nextLine().trim();
-
-                            results = SearchEngine.searchByName(clothesList, nameQuery);
+                            System.out.print("Введіть назву (або частину назви): ");
+                            results = store.searchByName(scanner.nextLine().trim());
                             break;
                         case "2":
-                            System.out.print("Введіть розмір для пошуку (S, M, L, XL, XXL): ");
-                            String sizeStr = scanner.nextLine().trim().toUpperCase();
+                            System.out.print("Введіть розмір (S, M, L, XL, XXL): ");
                             try {
-                                Size targetSize = Size.valueOf(sizeStr);
-                                results = SearchEngine.searchBySize(clothesList, targetSize);
+                                results = store.searchBySize(Size.valueOf(scanner.nextLine().trim().toUpperCase()));
                             } catch (IllegalArgumentException e) {
                                 System.out.println("Помилка: Невідомий розмір.");
-                                performSearch = false;
                             }
                             break;
                         case "3":
                             try {
-                                System.out.print("Введіть мінімальну ціну: ");
-                                double minPrice = Double.parseDouble(scanner.nextLine().trim());
-                                System.out.print("Введіть максимальну ціну: ");
-                                double maxPrice = Double.parseDouble(scanner.nextLine().trim());
-
-                                if (minPrice > maxPrice) {
-                                    System.out.println("Помилка: Мінімальна ціна не може бути більшою за максимальну.");
-                                    performSearch = false;
+                                System.out.print("Мінімальна ціна: ");
+                                double min = Double.parseDouble(scanner.nextLine().trim());
+                                System.out.print("Максимальна ціна: ");
+                                double max = Double.parseDouble(scanner.nextLine().trim());
+                                if (min > max) {
+                                    System.out.println("Помилка: мінімум більший за максимум.");
                                 } else {
-                                    results = SearchEngine.searchByPriceRange(clothesList, minPrice, maxPrice);
+                                    results = store.searchByPriceRange(min, max);
                                 }
                             } catch (NumberFormatException e) {
                                 System.out.println("Помилка: Некоректний формат числа.");
-                                performSearch = false;
                             }
                             break;
                         case "0":
                             System.out.println("Повернення до головного меню...");
-                            performSearch = false;
                             break;
                         default:
                             System.out.println("Помилка: Некоректний вибір.");
-                            performSearch = false;
                     }
 
-                    if (performSearch) {
-                        SearchEngine.printSearchResults(results);
+                    if (results != null) {
+                        System.out.println("\n--- Результати пошуку ---");
+                        store.printItems(results);
                     }
                     break;
                     
@@ -141,6 +130,9 @@ public class Main {
                         System.out.print("Ціна (використовуйте крапку, наприклад 199.99): ");
                         double price = Double.parseDouble(scanner.nextLine().trim());
 
+                        System.out.print("Кількість: ");
+                        int quantity = Integer.parseInt(scanner.nextLine().trim());
+
                         // Спроба створення об'єкта. Якщо дані неправильні, Clothes кине IllegalArgumentException
                         Clothes newItem = null;
 
@@ -168,7 +160,7 @@ public class Main {
                                 break;
                         }
 
-                        clothesList.add(newItem);
+                        store.addNewClothes(newItem, quantity);
                         System.out.println("Одяг успішно додано!");
 
 
@@ -180,32 +172,30 @@ public class Main {
                     break;
 
                 case "3":
-                    System.out.println("\n--- Ваша шафа ---");
-                    if (clothesList.isEmpty()) {
+                    System.out.println("\n--- Магазин ---");
+                    if (store.getItems().isEmpty()) {
                         System.out.println("Список порожній.");
                     } else {
-                        for (int i = 0; i < clothesList.size(); i++) {
-                            System.out.println((i + 1) + ". " + clothesList.get(i).toString());
-                        }
+                        store.printItems(store.getItems());
                     }
                     break;
 
                 case "4":
-                    if (clothesList.isEmpty()) {
-                        System.out.println("Список порожній! Немає чого копіювати.");
+                    if (store.getItems().isEmpty()) {
+                        System.out.println("Магазин порожній! Немає чого копіювати.");
                         break;
                     }
 
                     System.out.println("\n--- Доступні речі для копіювання ---");
-                    for (int i = 0; i < clothesList.size(); i++) {
-                        System.out.println((i + 1) + ". " + clothesList.get(i).toString());
-                    }
+
+                    store.printItems(store.getItems());
+
                     System.out.print("Введіть номер речі, яку хочете скопіювати: ");
 
                     try {
                         int indexToCopy = Integer.parseInt(scanner.nextLine().trim()) - 1;
 
-                        Clothes original = clothesList.get(indexToCopy);
+                        Clothes original = store.getItems().get(indexToCopy).getClothing();
 
                         // Використання конструктору копіювання
                         Clothes copy = null;
@@ -221,7 +211,7 @@ public class Main {
                             copy = new Clothes(original);
                         }
 
-                        clothesList.add(copy);
+                        store.addNewClothes(copy, 1);
 
                         System.out.println("Річ успішно скопійовано!");
 
@@ -235,7 +225,7 @@ public class Main {
                     break;
 
                 case "5":
-                    ClothesStorage.saveClothes(clothesList);
+                    ClothesStorage.saveStore(store);
                     System.out.println("Актуальні дані успішно збережено у файл input.json.");
                     System.out.println("Роботу завершено. До побачення!");
                     running = false;
