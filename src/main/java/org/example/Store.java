@@ -1,0 +1,96 @@
+package org.example;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Клас, який володіє колекцією товарів
+ */
+public class Store {
+    private List<StoreItem> items;
+
+    public Store() {
+        this.items = new ArrayList<>();
+    }
+
+    public List<StoreItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<StoreItem> items) {
+        this.items = items;
+    }
+
+    /**
+     * Додавання нового одягу
+     */
+    public void addNewClothes(Clothes cl, int quantity) {
+        if (cl == null) {
+            throw new IllegalArgumentException("Дані про одяг не можуть бути порожніми.");
+        }
+
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Введіть коректну кількість товару для додавання (більше 0).");
+        }
+
+        for (StoreItem item : items) {
+            if (item.getClothing().equals(cl)) {
+                item.setQuantity(item.getQuantity() + quantity);
+                return;
+            }
+        }
+
+        items.add(new StoreItem(cl, quantity));
+    }
+
+    // Методи пошуку
+
+    public List<StoreItem> searchByName(String nameQuery) {
+        List<StoreItem> resultList = new ArrayList<>();
+        String queryLower = nameQuery.toLowerCase();
+
+        for (StoreItem item : items) {
+            if (item.getClothing().getName().toLowerCase().contains(queryLower)) {
+                resultList.add(item);
+            }
+        }
+        return resultList;
+    }
+
+    public List<StoreItem> searchBySize(Size targetSize) {
+        List<StoreItem> resultList = new ArrayList<>();
+
+        for (StoreItem item : items) {
+            if (item.getClothing().getSize() == targetSize) {
+                resultList.add(item);
+            }
+        }
+        return resultList;
+    }
+
+    public List<StoreItem> searchByPriceRange(double minPrice, double maxPrice) {
+        List<StoreItem> resultList = new ArrayList<>();
+
+        for (StoreItem item : items) {
+            double price = item.getClothing().getPrice();
+            if (price >= minPrice && price <= maxPrice) {
+                resultList.add(item);
+            }
+        }
+        return resultList;
+    }
+
+    /**
+     * Виведення списку товарів
+     */
+    public void printItems(List<StoreItem> listToPrint) {
+        if (listToPrint == null || listToPrint.isEmpty()) {
+            System.out.println("Список порожній або нічого не знайдено.");
+        } else {
+            System.out.println("Кількість позицій: " + listToPrint.size());
+            for (int i = 0; i < listToPrint.size(); i++) {
+                System.out.println((i + 1) + ". " + listToPrint.get(i).toString());
+            }
+        }
+    }
+}
