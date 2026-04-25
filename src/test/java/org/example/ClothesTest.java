@@ -103,83 +103,104 @@ public class ClothesTest {
 
     @Test
     void jsonStorageTest() {
-        List<Clothes> originalList = new ArrayList<>();
-        originalList.add(new Clothes("Куртка", Size.XL, 2500.0, "Чорний"));
-        originalList.add(new Shorts("Гавайські", Size.L, 450.0, "Червоний", true));
-        originalList.add(new Polo("Спортивне", Size.S, 650.0, "Зелений", false));
+        Store store = new Store();
+        store.addNewClothes(new Clothes("Куртка", Size.XL, 2500.0, "Чорний"), 2);
+        store.addNewClothes(new Shorts("Гавайські", Size.L, 450.0, "Червоний", true), 5);
+        store.addNewClothes(new Polo("Спортивне", Size.S, 650.0, "Зелений", false), 3);
 
-        ClothesStorage.saveClothes(originalList);
+        ClothesStorage.saveStore(store);
+        Store loadedStore = ClothesStorage.loadStore();
 
-        List<Clothes> loadedList = ClothesStorage.loadClothes();
+        assertNotNull(loadedStore);
+        assertEquals(3, loadedStore.getItems().size());
 
-        assertNotNull(loadedList);
-        assertEquals(originalList.size(), loadedList.size());
+        assertSame(loadedStore.getItems().get(0).getClothing().getClass(), Clothes.class);
+        assertSame(loadedStore.getItems().get(1).getClothing().getClass(), Shorts.class);
+        assertSame(loadedStore.getItems().get(2).getClothing().getClass(), Polo.class);
 
-        assertSame(loadedList.get(0).getClass(), Clothes.class);
-        assertSame(loadedList.get(1).getClass(), Shorts.class);
-        assertSame(loadedList.get(2).getClass(), Polo.class);
-
-        Shorts loadedShorts = (Shorts) loadedList.get(1);
+        Shorts loadedShorts = (Shorts) loadedStore.getItems().get(1).getClothing();
         assertEquals("Гавайські", loadedShorts.getName());
         assertTrue(loadedShorts.isForSwimming());
+        assertEquals(5, loadedStore.getItems().get(1).getQuantity());
 
-        Polo loadedPolo = (Polo) loadedList.get(2);
+        Polo loadedPolo = (Polo) loadedStore.getItems().get(2).getClothing();
         assertEquals("Спортивне", loadedPolo.getName());
         assertTrue(loadedPolo.toString().contains("Без кишені"));
+        assertEquals(3, loadedStore.getItems().get(2).getQuantity());
     }
 
-    private List<Clothes> getTestCollection() {
-        List<Clothes> list = new ArrayList<>();
-        list.add(new Clothes("Футболка біла", Size.M, 300.0, "Білий"));
-        list.add(new Clothes("Футболка чорна", Size.L, 350.0, "Чорний"));
-        list.add(new Pants("Джинси", Size.M, 1200.0, "Синій"));
-        list.add(new Shorts("Шорти пляжні", Size.S, 450.0, "Червоний", true));
-        list.add(new Polo("Поло", Size.XL, 800.0, "Зелений", false));
-        return list;
+    private Store getTestStore() {
+        Store store = new Store();
+        store.addNewClothes(new Clothes("Футболка біла", Size.M, 300.0, "Білий"), 10);
+        store.addNewClothes(new Clothes("Футболка чорна", Size.L, 350.0, "Чорний"), 5);
+        store.addNewClothes(new Pants("Джинси", Size.M, 1200.0, "Синій"), 7);
+        store.addNewClothes(new Shorts("Шорти пляжні", Size.S, 450.0, "Червоний", true), 3);
+        store.addNewClothes(new Polo("Поло", Size.XL, 800.0, "Зелений", false), 2);
+        return store;
     }
 
     @Test
     void searchByNameTest() {
-        List<Clothes> testList = getTestCollection();
+        Store store = getTestStore();
 
-        List<Clothes> resultMultiple = SearchEngine.searchByName(testList, "Футболка");
+        List<StoreItem> resultMultiple = store.searchByName("Футболка");
         assertEquals(2, resultMultiple.size());
 
-        List<Clothes> resultCaseInsensitive = SearchEngine.searchByName(testList, "ДЖИНСИ");
+        List<StoreItem> resultCaseInsensitive = store.searchByName("ДЖИНСИ");
         assertEquals(1, resultCaseInsensitive.size());
-        assertEquals("Джинси", resultCaseInsensitive.get(0).getName());
+        assertEquals("Джинси", resultCaseInsensitive.get(0).getClothing().getName());
 
-        List<Clothes> resultEmpty = SearchEngine.searchByName(testList, "Капелюх");
+        List<StoreItem> resultEmpty = store.searchByName("Капелюх");
         assertTrue(resultEmpty.isEmpty());
     }
 
     @Test
     void searchBySizeTest() {
-        List<Clothes> testList = getTestCollection();
+        Store store = getTestStore();
 
-        List<Clothes> resultSizeM = SearchEngine.searchBySize(testList, Size.M);
+        List<StoreItem> resultSizeM = store.searchBySize(Size.M);
         assertEquals(2, resultSizeM.size());
 
-        List<Clothes> resultSizeXL = SearchEngine.searchBySize(testList, Size.XL);
+        List<StoreItem> resultSizeXL = store.searchBySize(Size.XL);
         assertEquals(1, resultSizeXL.size());
-        assertEquals("Поло", resultSizeXL.get(0).getName());
+        assertEquals("Поло", resultSizeXL.get(0).getClothing().getName());
 
-        List<Clothes> resultSizeXXL = SearchEngine.searchBySize(testList, Size.XXL);
+        List<StoreItem> resultSizeXXL = store.searchBySize(Size.XXL);
         assertTrue(resultSizeXXL.isEmpty());
     }
 
     @Test
     void searchByPriceRangeTest() {
-        List<Clothes> testList = getTestCollection();
+        Store store = getTestStore();
 
-        List<Clothes> resultRange = SearchEngine.searchByPriceRange(testList, 300.0, 500.0);
+        List<StoreItem> resultRange = store.searchByPriceRange(300.0, 500.0);
         assertEquals(3, resultRange.size()); // 300, 350, 450
 
-        List<Clothes> resultExact = SearchEngine.searchByPriceRange(testList, 1200.0, 1200.0);
+        List<StoreItem> resultExact = store.searchByPriceRange(1200.0, 1200.0);
         assertEquals(1, resultExact.size());
-        assertEquals("Джинси", resultExact.get(0).getName());
+        assertEquals("Джинси", resultExact.get(0).getClothing().getName());
 
-        List<Clothes> resultEmpty = SearchEngine.searchByPriceRange(testList, 5000.0, 10000.0);
+        List<StoreItem> resultEmpty = store.searchByPriceRange(5000.0, 10000.0);
         assertTrue(resultEmpty.isEmpty());
+    }
+
+    @Test
+    void storeAggregationTest() {
+        Store store = new Store();
+        Clothes shirt1 = new Clothes("Худі", Size.L, 1000.0, "Чорний");
+        Clothes shirt2 = new Clothes("Худі", Size.L, 1000.0, "Чорний");
+        Pants pants = new Pants("Спортивки", Size.M, 800.0, "Сірий");
+
+        store.addNewClothes(shirt1, 5);
+        assertEquals(1, store.getItems().size());
+        assertEquals(5, store.getItems().get(0).getQuantity());
+
+        store.addNewClothes(shirt2, 3);
+        assertEquals(1, store.getItems().size());
+        assertEquals(8, store.getItems().get(0).getQuantity());
+
+        store.addNewClothes(pants, 2);
+        assertEquals(2, store.getItems().size());
+        assertEquals(2, store.getItems().get(1).getQuantity());
     }
 }
