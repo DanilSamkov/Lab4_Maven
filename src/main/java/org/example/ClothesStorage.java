@@ -1,13 +1,10 @@
 package org.example;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClothesStorage {
     private static final String FILE_NAME = "input.json";
@@ -17,29 +14,27 @@ public class ClothesStorage {
     /**
      * Читання з файлу
      */
-    public static List<Clothes> loadClothes() {
+    public static Store loadStore() {
         File file = new File(FILE_NAME);
 
         if (!file.exists()) {
-            return new ArrayList<>();
+            return new Store();
         }
 
         try {
-            return mapper.readValue(file, new TypeReference<List<Clothes>>() {});
+            return mapper.readValue(file, Store.class);
         } catch (IOException e) {
-            System.out.println("Помилка під час читання файлу: " + e.getMessage());
-            return new ArrayList<>();
+            System.out.println("Помилка читання. Створено новий порожній магазин.");
+            return new Store();
         }
     }
 
     /**
      * Запис у файл
      */
-    public static void saveClothes(List<Clothes> clothesList) {
+    public static void saveStore(Store store) {
         try {
-            mapper.writerFor(new TypeReference<List<Clothes>>() {})
-                    .writeValue(new File(FILE_NAME), clothesList);
-
+            mapper.writeValue(new File(FILE_NAME), store);
         } catch (IOException e) {
             System.out.println("Помилка під час збереження файлу: " + e.getMessage());
         }
