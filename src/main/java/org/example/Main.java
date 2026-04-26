@@ -9,6 +9,16 @@ import java.util.Scanner;
  */
 public class Main {
     public static void main(String[] args) {
+
+        if (args.length == 0) {
+            System.out.println("КРИТИЧНА ПОМИЛКА: Не вказано шлях до файлу конфігурації БД!");
+            System.out.println("Вкажіть app.properties у Program Arguments.");
+            return;
+        }
+
+        String configPath = args[0];
+        DatabaseManager databaseManager = new DatabaseManager(configPath);
+
         Scanner scanner = new Scanner(System.in);
 
         Store store = ClothesStorage.loadStore();
@@ -163,6 +173,7 @@ public class Main {
                         store.addNewClothes(newItem, quantity);
                         System.out.println("Одяг успішно додано!");
 
+                        databaseManager.saveItem(newItem, quantity);
 
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка вводу: Ціна має бути коректним числом!");
@@ -214,6 +225,8 @@ public class Main {
                         store.addNewClothes(copy, 1);
 
                         System.out.println("Річ успішно скопійовано!");
+
+                        databaseManager.saveItem(copy, 1);
 
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка: введіть коректне число.");
