@@ -12,7 +12,7 @@ public class ClothesTest {
     @Test
     void succesfullClothCreation(){
 
-        Clothes item = new Clothes("Футболка", Size.XXL, 250.50, "Чорний");
+        Clothes item = new BasicClothes("Футболка", Size.XXL, 250.50, "Чорний");
 
         assertNotNull(item);
 
@@ -30,23 +30,23 @@ public class ClothesTest {
 
     @Test
     void setIllegalExceptionsTest(){
-        Clothes item = new Clothes("Джинси", Size.S, 900.25, "Синій");
+        Clothes item = new BasicClothes("Джинси", Size.S, 900.25, "Синій");
 
         assertThrows(IllegalArgumentException.class,()->{item.setName("");});
         assertThrows(IllegalArgumentException.class,()->{item.setColor("");});
         assertThrows(IllegalArgumentException.class,()->{item.setSize(null);});
         assertThrows(IllegalArgumentException.class,()->{item.setPrice(-1);});
 
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("",Size.M,456.45,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх",null,456.45,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх",Size.M,-546,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new Clothes("Капелюх",Size.M,456.45,"");});
+        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("",Size.M,456.45,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("Капелюх",null,456.45,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("Капелюх",Size.M,-546,"Рожевий");});
+        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("Капелюх",Size.M,456.45,"");});
     }
 
     @Test
     void copyConstructorTest() {
-        Clothes original = new Clothes("Светр", Size.L, 850.0, "Сірий");
-        Clothes copy = new Clothes(original);
+        BasicClothes original = new BasicClothes("Светр", Size.L, 850.0, "Сірий");
+        BasicClothes copy = new BasicClothes(original);
 
         assertNotNull(copy);
         assertEquals(original.getName(), copy.getName());
@@ -54,7 +54,7 @@ public class ClothesTest {
         assertEquals(original.getPrice(), copy.getPrice());
         assertEquals(original.getColor(), copy.getColor());
 
-        assertThrows(IllegalArgumentException.class,()->{new Clothes(null);});
+        assertThrows(IllegalArgumentException.class,()->{new BasicClothes(null);});
     }
 
     @Test
@@ -104,7 +104,7 @@ public class ClothesTest {
     @Test
     void jsonStorageTest() {
         Store store = new Store();
-        store.addNewClothes(new Clothes("Куртка", Size.XL, 2500.0, "Чорний"), 2);
+        store.addNewClothes(new BasicClothes("Куртка", Size.XL, 2500.0, "Чорний"), 2);
         store.addNewClothes(new Shorts("Гавайські", Size.L, 450.0, "Червоний", true), 5);
         store.addNewClothes(new Polo("Спортивне", Size.S, 650.0, "Зелений", false), 3);
 
@@ -114,7 +114,7 @@ public class ClothesTest {
         assertNotNull(loadedStore);
         assertEquals(3, loadedStore.getItems().size());
 
-        assertSame(loadedStore.getItems().get(0).getClothing().getClass(), Clothes.class);
+        assertSame(loadedStore.getItems().get(0).getClothing().getClass(), BasicClothes.class);
         assertSame(loadedStore.getItems().get(1).getClothing().getClass(), Shorts.class);
         assertSame(loadedStore.getItems().get(2).getClothing().getClass(), Polo.class);
 
@@ -131,8 +131,8 @@ public class ClothesTest {
 
     private Store getTestStore() {
         Store store = new Store();
-        store.addNewClothes(new Clothes("Футболка біла", Size.M, 300.0, "Білий"), 10);
-        store.addNewClothes(new Clothes("Футболка чорна", Size.L, 350.0, "Чорний"), 5);
+        store.addNewClothes(new BasicClothes("Футболка біла", Size.M, 300.0, "Білий"), 10);
+        store.addNewClothes(new BasicClothes("Футболка чорна", Size.L, 350.0, "Чорний"), 5);
         store.addNewClothes(new Pants("Джинси", Size.M, 1200.0, "Синій"), 7);
         store.addNewClothes(new Shorts("Шорти пляжні", Size.S, 450.0, "Червоний", true), 3);
         store.addNewClothes(new Polo("Поло", Size.XL, 800.0, "Зелений", false), 2);
@@ -187,8 +187,8 @@ public class ClothesTest {
     @Test
     void storeAggregationTest() {
         Store store = new Store();
-        Clothes shirt1 = new Clothes("Худі", Size.L, 1000.0, "Чорний");
-        Clothes shirt2 = new Clothes("Худі", Size.L, 1000.0, "Чорний");
+        Clothes shirt1 = new BasicClothes("Худі", Size.L, 1000.0, "Чорний");
+        Clothes shirt2 = new BasicClothes("Худі", Size.L, 1000.0, "Чорний");
         Pants pants = new Pants("Спортивки", Size.M, 800.0, "Сірий");
 
         store.addNewClothes(shirt1, 5);
@@ -202,5 +202,26 @@ public class ClothesTest {
         store.addNewClothes(pants, 2);
         assertEquals(2, store.getItems().size());
         assertEquals(2, store.getItems().get(1).getQuantity());
+    }
+
+    @Test
+    void sortingTest() {
+        Store store = new Store();
+
+        store.addNewClothes(new BasicClothes("Футболка", Size.M, 300.0, "Білий"), 1);
+        store.addNewClothes(new Pants("Джинси", Size.L, 1200.0, "Синій"), 1);
+        store.addNewClothes(new BasicClothes("Анорак", Size.S, 1500.0, "Чорний"), 1);
+        store.addNewClothes(new BasicClothes("Анорак", Size.S, 1200.0, "Білий"), 1);
+
+        List<StoreItem> sorted = store.getSortedItems();
+
+        assertEquals("Анорак", sorted.get(0).getClothing().getName());
+        assertEquals(1200.0, sorted.get(0).getClothing().getPrice());
+
+        assertEquals("Анорак", sorted.get(1).getClothing().getName());
+        assertEquals(1500.0, sorted.get(1).getClothing().getPrice());
+
+        assertEquals("Джинси", sorted.get(2).getClothing().getName());
+        assertEquals("Футболка", sorted.get(3).getClothing().getName());
     }
 }
