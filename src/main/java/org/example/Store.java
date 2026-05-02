@@ -43,8 +43,9 @@ public class Store {
         items.add(new StoreItem(cl, quantity));
     }
 
-    // Методи пошуку
-
+    /**
+     * Методи пошуку
+     */
     public List<StoreItem> searchByName(String nameQuery) {
         List<StoreItem> resultList = new ArrayList<>();
         String queryLower = nameQuery.toLowerCase();
@@ -92,5 +93,14 @@ public class Store {
                 System.out.println((i + 1) + ". " + listToPrint.get(i).toString());
             }
         }
+    }
+
+    /**
+     * Повертає новий відсортований список товарів
+     */
+    public List<StoreItem> getSortedItems() {
+        List<StoreItem> sortedList = new ArrayList<>(this.items);
+        java.util.Collections.sort(sortedList);
+        return sortedList;
     }
 }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 
 /**
- * Клас, що описує одяг.
+ * Абстрактний батьківський клас, що описує одяг.
  * Містить перевірку вхідних даних (валідацію).
  */
 @JsonTypeInfo(
@@ -15,13 +15,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Clothes.class, name = "clothes"),
+        @JsonSubTypes.Type(value = BasicClothes.class, name = "clothes"),
         @JsonSubTypes.Type(value = Pants.class, name = "pants"),
         @JsonSubTypes.Type(value = Shirts.class, name = "shirts"),
         @JsonSubTypes.Type(value = Shorts.class, name = "shorts"),
         @JsonSubTypes.Type(value = Polo.class, name = "polo")
 })
-public class Clothes {
+public abstract class Clothes implements Comparable<Clothes>{
     private String name;
     private Size size;
     private double price;
@@ -53,6 +53,21 @@ public class Clothes {
         this.size = other.size;
         this.price = other.price;
         this.color = other.color;
+    }
+
+    /**
+     * Comparable
+     */
+    @Override
+    public int compareTo(Clothes other) {
+        if (other == null) return 1;
+
+        int nameCompare = this.name.compareToIgnoreCase(other.name);
+        if (nameCompare != 0) {
+            return nameCompare;
+        }
+
+        return Double.compare(this.price, other.price);
     }
 
     // Гетери та сетери

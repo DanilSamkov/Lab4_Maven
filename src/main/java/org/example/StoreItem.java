@@ -3,7 +3,7 @@ package org.example;
 /**
  * Клас, що містить об'єкт одягу та його кількість
  */
-public class StoreItem {
+public class StoreItem implements Comparable<StoreItem>{
     private Clothes clothing;
     private int quantity;
 
@@ -31,6 +31,13 @@ public class StoreItem {
             throw new IllegalArgumentException("Кількість товару не може бути від'ємною.");
         }
         this.quantity = quantity;
+    }
+
+    @Override
+    public int compareTo(StoreItem other) {
+        if (other == null || other.getClothing() == null) return 1;
+        if (this.clothing == null) return -1;
+        return this.clothing.compareTo(other.getClothing());
     }
 
     @Override
