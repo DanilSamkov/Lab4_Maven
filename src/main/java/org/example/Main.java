@@ -21,8 +21,9 @@ public class Main {
             System.out.println("1. Пошук об'єкта");
             System.out.println("2. Створити новий об'єкт (додати одяг)");
             System.out.println("3. Вивести інформацію про всі об'єкти");
-            System.out.println("4. Скопіювати існуючий об'єкт");
-            System.out.println("5. Завершити роботу");
+            System.out.println("4. Вивести відсортовану інформацію про всі об'єкти");
+            System.out.println("5. Скопіювати існуючий об'єкт");
+            System.out.println("6. Завершити роботу");
             System.out.print("Оберіть дію (1-5): ");
 
             String choice = scanner.nextLine().trim();
@@ -138,7 +139,7 @@ public class Main {
 
                         switch (typeChoice) {
                             case "1":
-                                newItem = new Clothes(name, sizeEnum, price, color);
+                                newItem = new BasicClothes(name, sizeEnum, price, color);
                                 break;
                             case "2":
                                 newItem = new Pants(name, sizeEnum, price, color);
@@ -181,6 +182,16 @@ public class Main {
                     break;
 
                 case "4":
+                    System.out.println("\n--- Магазин (Відсортовано за Назвою та Ціною) ---");
+                    if (store.getItems().isEmpty()) {
+                        System.out.println("Список порожній.");
+                    } else {
+                        List<StoreItem> sortedList = store.getSortedItems();
+                        store.printItems(sortedList);
+                    }
+                    break;
+
+                case "5":
                     if (store.getItems().isEmpty()) {
                         System.out.println("Магазин порожній! Немає чого копіювати.");
                         break;
@@ -207,8 +218,8 @@ public class Main {
                             copy = new Polo((Polo) original);
                         } else if (original instanceof Shirts) { // Перевірка батька після спадкоємця
                             copy = new Shirts((Shirts) original);
-                        } else {
-                            copy = new Clothes(original);
+                        } else if (original instanceof BasicClothes) {
+                            copy = new BasicClothes((BasicClothes) original);
                         }
 
                         store.addNewClothes(copy, 1);
@@ -224,7 +235,7 @@ public class Main {
                     }
                     break;
 
-                case "5":
+                case "6":
                     ClothesStorage.saveStore(store);
                     System.out.println("Актуальні дані успішно збережено у файл input.json.");
                     System.out.println("Роботу завершено. До побачення!");
