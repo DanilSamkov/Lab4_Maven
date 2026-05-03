@@ -2,7 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Клас, який володіє колекцією товарів
  */
@@ -96,11 +96,22 @@ public class Store {
     }
 
     /**
-     * Повертає новий відсортований список товарів
+     * Повертає новий відсортований список товарів. ЛР№13
      */
+    @JsonIgnore
     public List<StoreItem> getSortedItems() {
         List<StoreItem> sortedList = new ArrayList<>(this.items);
         java.util.Collections.sort(sortedList);
+        return sortedList;
+    }
+
+    /**
+     * Повертає новий відсортований список товарів за заданим критерієм (Comparator). ЛР№14
+     */
+    @JsonIgnore
+    public List<StoreItem> getSortedItems(java.util.Comparator<StoreItem> comparator) {
+        List<StoreItem> sortedList = new ArrayList<>(this.items);
+        java.util.Collections.sort(sortedList, comparator);
         return sortedList;
     }
 }
