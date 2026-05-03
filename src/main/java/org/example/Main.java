@@ -182,11 +182,47 @@ public class Main {
                     break;
 
                 case "4":
-                    System.out.println("\n--- Магазин (Відсортовано за Назвою та Ціною) ---");
                     if (store.getItems().isEmpty()) {
-                        System.out.println("Список порожній.");
-                    } else {
-                        List<StoreItem> sortedList = store.getSortedItems();
+                        System.out.println("Магазин порожній! Немає чого сортувати.");
+                        break;
+                    }
+
+                    System.out.println("\n--- Оберіть критерій сортування ---");
+                    System.out.println("1. За ціною (від найдешевшого до найдорожчого)");
+                    System.out.println("2. За кількістю на складі (від найбільшого до найменшого)");
+                    System.out.println("3. За розміром (від S до XXL)");
+                    System.out.println("0. Повернутися в головне меню");
+                    System.out.print("Ваш вибір (0-3): ");
+
+                    String sortChoice = scanner.nextLine().trim();
+
+                    java.util.Comparator<StoreItem> comparator = null;
+
+                    switch (sortChoice) {
+                        case "1":
+                            comparator = StoreItem.SORT_BY_PRICE;
+                            break;
+
+                        case "2":
+                            comparator = StoreItem.SORT_BY_QUANTITY_DESC;
+                            break;
+
+                        case "3":
+                            comparator = StoreItem.SORT_BY_SIZE;
+                            break;
+
+                        case "0":
+                            System.out.println("Повернення до головного меню...");
+                            break;
+
+                        default:
+                            System.out.println("Помилка: Некоректний вибір критерію сортування.");
+                            break;
+                    }
+
+                    if (comparator != null) {
+                        List<StoreItem> sortedList = store.getSortedItems(comparator);
+                        System.out.println("\n--- Відсортований магазин ---");
                         store.printItems(sortedList);
                     }
                     break;

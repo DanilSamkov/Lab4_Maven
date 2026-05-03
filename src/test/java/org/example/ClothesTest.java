@@ -224,4 +224,24 @@ public class ClothesTest {
         assertEquals("Джинси", sorted.get(2).getClothing().getName());
         assertEquals("Футболка", sorted.get(3).getClothing().getName());
     }
+
+    @Test
+    void comparatorSortingTest() {
+        Store store = new Store();
+        store.addNewClothes(new BasicClothes("Футболка", Size.L, 500.0, "Білий"), 5);
+        store.addNewClothes(new BasicClothes("Шкарпетки", Size.S, 100.0, "Чорний"), 50);
+        store.addNewClothes(new BasicClothes("Світшот", Size.XXL, 1200.0, "Сірий"), 2);
+
+        List<StoreItem> sortedByPrice = store.getSortedItems(StoreItem.SORT_BY_PRICE);
+        assertEquals("Шкарпетки", sortedByPrice.get(0).getClothing().getName()); // 100.0
+        assertEquals("Світшот", sortedByPrice.get(2).getClothing().getName());   // 1200.0
+
+        List<StoreItem> sortedByQuantity = store.getSortedItems(StoreItem.SORT_BY_QUANTITY_DESC);
+        assertEquals("Шкарпетки", sortedByQuantity.get(0).getClothing().getName()); // 50 шт
+        assertEquals("Світшот", sortedByQuantity.get(2).getClothing().getName());   // 2 шт
+
+        List<StoreItem> sortedBySize = store.getSortedItems(StoreItem.SORT_BY_SIZE);
+        assertEquals(Size.S, sortedBySize.get(0).getClothing().getSize());
+        assertEquals(Size.XXL, sortedBySize.get(2).getClothing().getSize());
+    }
 }
