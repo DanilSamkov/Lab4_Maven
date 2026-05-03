@@ -20,11 +20,13 @@ public class Main {
             System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
             System.out.println("1. Пошук об'єкта");
             System.out.println("2. Створити новий об'єкт (додати одяг)");
-            System.out.println("3. Вивести інформацію про всі об'єкти");
-            System.out.println("4. Вивести відсортовану інформацію про всі об'єкти");
-            System.out.println("5. Скопіювати існуючий об'єкт");
-            System.out.println("6. Завершити роботу");
-            System.out.print("Оберіть дію (1-5): ");
+            System.out.println("3. Модифікувати об'єкт (Update)");
+            System.out.println("4. Видалити об'єкт (Delete)");
+            System.out.println("5. Вивести інформацію про всі об'єкти");
+            System.out.println("6. Вивести відсортовану інформацію");
+            System.out.println("7. Скопіювати існуючий об'єкт");
+            System.out.println("8. Завершити роботу");
+            System.out.print("Оберіть дію (1-8): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -173,6 +175,113 @@ public class Main {
                     break;
 
                 case "3":
+                    if (store.getItems().isEmpty()) {
+                        System.out.println("Магазин порожній! Немає чого модифікувати.");
+                        break;
+                    }
+                    System.out.println("\n--- Оберіть об'єкт для модифікації ---");
+                    store.printItems(store.getItems());
+                    System.out.print("Ваш вибір (номер): ");
+
+                    try {
+                        int updateIndex = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                        StoreItem existingItem = store.getItems().get(updateIndex);
+
+                        Clothes original = existingItem.getClothing();
+                        Clothes copy = null;
+                        if (original instanceof Shorts) copy = new Shorts((Shorts) original);
+                        else if (original instanceof Pants) copy = new Pants((Pants) original);
+                        else if (original instanceof Polo) copy = new Polo((Polo) original);
+                        else if (original instanceof Shirts) copy = new Shirts((Shirts) original);
+                        else if (original instanceof BasicClothes) copy = new BasicClothes((BasicClothes) original);
+
+                        StoreItem newItem = new StoreItem(copy, existingItem.getQuantity());
+
+                        System.out.println("Що ви хочете змінити?");
+                        System.out.println("1. Назву");
+                        System.out.println("2. Розмір");
+                        System.out.println("3. Ціну");
+                        System.out.println("4. Колір");
+                        System.out.println("5. Кількість");
+                        System.out.print("Ваш вибір: ");
+                        String attrChoice = scanner.nextLine().trim();
+
+                        boolean changed = true;
+                        switch (attrChoice) {
+                            case "1":
+                                System.out.print("Нова назва: ");
+                                newItem.getClothing().setName(scanner.nextLine().trim());
+                                break;
+                            case "2":
+                                System.out.print("Новий розмір (S, M, L, XL, XXL): ");
+                                newItem.getClothing().setSize(Size.valueOf(scanner.nextLine().trim().toUpperCase()));
+                                break;
+                            case "3":
+                                System.out.print("Нова ціна: ");
+                                newItem.getClothing().setPrice(Double.parseDouble(scanner.nextLine().trim()));
+                                break;
+                            case "4":
+                                System.out.print("Новий колір: ");
+                                newItem.getClothing().setColor(scanner.nextLine().trim());
+                                break;
+                            case "5":
+                                System.out.print("Нова кількість: ");
+                                newItem.setQuantity(Integer.parseInt(scanner.nextLine().trim()));
+                                break;
+                            default:
+                                System.out.println("Помилка: Некоректний вибір атрибута.");
+                                changed = false;
+                                break;
+                        }
+
+                        if (changed) {
+                            if (store.update(existingItem, newItem)) {
+                                System.out.println("Об'єкт успішно модифіковано!");
+                            } else {
+                                System.out.println("Помилка: Не вдалося оновити об'єкт.");
+                            }
+                        }
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("Помилка: Введіть коректне число.");
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Помилка: Об'єкта з таким номером не існує.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Помилка модифікації: " + e.getMessage());
+                    }
+                    break;
+
+                case "4":
+                    if (store.getItems().isEmpty()) {
+                        System.out.println("Магазин порожній! Немає чого видаляти.");
+                        break;
+                    }
+                    System.out.println("\n--- Оберіть об'єкт для видалення ---");
+                    store.printItems(store.getItems());
+                    System.out.print("Ваш вибір (номер): ");
+
+                    try {
+                        int deleteIndex = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                        StoreItem itemToDelete = store.getItems().get(deleteIndex);
+
+                        System.out.print("Ви впевнені, що хочете видалити цей об'єкт? (т/н): ");
+                        String confirm = scanner.nextLine().trim().toLowerCase();
+
+                        if (confirm.equals("т") || confirm.equals("так") || confirm.equals("y") || confirm.equals("yes")) {
+                            if (store.delete(itemToDelete)) {
+                                System.out.println("Об'єкт успішно видалено!");
+                            } else {
+                                System.out.println("Помилка: Об'єкт не знайдено.");
+                            }
+                        } else {
+                            System.out.println("Видалення скасовано.");
+                        }
+                    } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                        System.out.println("Помилка: Некоректний номер об'єкта.");
+                    }
+                    break;
+
+                case "5":
                     System.out.println("\n--- Магазин ---");
                     if (store.getItems().isEmpty()) {
                         System.out.println("Список порожній.");
@@ -181,7 +290,7 @@ public class Main {
                     }
                     break;
 
-                case "4":
+                case "6":
                     if (store.getItems().isEmpty()) {
                         System.out.println("Магазин порожній! Немає чого сортувати.");
                         break;
@@ -227,7 +336,7 @@ public class Main {
                     }
                     break;
 
-                case "5":
+                case "7":
                     if (store.getItems().isEmpty()) {
                         System.out.println("Магазин порожній! Немає чого копіювати.");
                         break;
@@ -271,7 +380,7 @@ public class Main {
                     }
                     break;
 
-                case "6":
+                case "8":
                     ClothesStorage.saveStore(store);
                     System.out.println("Актуальні дані успішно збережено у файл input.json.");
                     System.out.println("Роботу завершено. До побачення!");
