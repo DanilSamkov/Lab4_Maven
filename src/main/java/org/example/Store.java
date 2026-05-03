@@ -114,4 +114,27 @@ public class Store {
         java.util.Collections.sort(sortedList, comparator);
         return sortedList;
     }
+
+    /**
+     * Update
+     */
+    public boolean update(StoreItem existingObject, StoreItem newObject) {
+        if (existingObject == null || newObject == null) return false;
+
+        int index = items.indexOf(existingObject);
+        if (index != -1) {
+            items.set(index, newObject);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Delete
+     */
+    public boolean delete(StoreItem existingObject) {
+        if (existingObject == null) return false;
+
+        return items.remove(existingObject);
+    }
 }
