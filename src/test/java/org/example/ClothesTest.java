@@ -244,4 +244,30 @@ public class ClothesTest {
         assertEquals(Size.S, sortedBySize.get(0).getClothing().getSize());
         assertEquals(Size.XXL, sortedBySize.get(2).getClothing().getSize());
     }
+
+    @Test
+    void updateAndDeleteTest() {
+        Store store = new Store();
+        BasicClothes originalClothes = new BasicClothes("Кепка", Size.M, 300.0, "Червоний");
+        store.addNewClothes(originalClothes, 10);
+
+        StoreItem existingItem = store.getItems().get(0);
+
+        BasicClothes modifiedClothes = new BasicClothes("Кепка", Size.L, 350.0, "Чорний");
+        StoreItem newItem = new StoreItem(modifiedClothes, 15);
+
+        boolean updateResult = store.update(existingItem, newItem);
+
+        assertTrue(updateResult);
+        assertEquals(Size.L, store.getItems().get(0).getClothing().getSize());
+        assertEquals(350.0, store.getItems().get(0).getClothing().getPrice());
+        assertEquals(15, store.getItems().get(0).getQuantity());
+
+        boolean deleteResult = store.delete(newItem);
+
+        assertTrue(deleteResult);
+        assertTrue(store.getItems().isEmpty());
+
+        assertFalse(store.delete(newItem));
+    }
 }
