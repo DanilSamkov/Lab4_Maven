@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.Comparator;
+import java.util.Objects;
 /**
  * Клас, що містить об'єкт одягу та його кількість
  */
@@ -51,6 +52,14 @@ public class StoreItem implements Comparable<StoreItem>{
         if (other == null || other.getClothing() == null) return 1;
         if (this.clothing == null) return -1;
         return this.clothing.compareTo(other.getClothing());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StoreItem storeItem = (StoreItem) o;
+        return quantity == storeItem.quantity && Objects.equals(clothing, storeItem.clothing);
     }
 
     @Override
