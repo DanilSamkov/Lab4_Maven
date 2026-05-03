@@ -35,29 +35,16 @@ public class StoreItem implements Comparable<StoreItem>{
     }
 
     /**
-     * Компаратори
+     * Компаратори (лямюда-вирази)
      */
-    public static final Comparator<StoreItem> SORT_BY_PRICE = new Comparator<StoreItem>() {
-        @Override
-        public int compare(StoreItem o1, StoreItem o2) {
-            return Double.compare(o1.getClothing().getPrice(), o2.getClothing().getPrice());
-        }
-    };
+    public static final Comparator<StoreItem> SORT_BY_PRICE =
+            (o1, o2) -> Double.compare(o1.getClothing().getPrice(), o2.getClothing().getPrice());
 
-    public static final Comparator<StoreItem> SORT_BY_QUANTITY_DESC = new Comparator<StoreItem>() {
-        @Override
-        public int compare(StoreItem o1, StoreItem o2) {
-            return Integer.compare(o2.getQuantity(), o1.getQuantity());
-        }
-    };
+    public static final Comparator<StoreItem> SORT_BY_QUANTITY_DESC =
+            (o1, o2) -> Integer.compare(o2.getQuantity(), o1.getQuantity());
 
-    // 3. За розміром
-    public static final Comparator<StoreItem> SORT_BY_SIZE = new Comparator<StoreItem>() {
-        @Override
-        public int compare(StoreItem o1, StoreItem o2) {
-            return o1.getClothing().getSize().compareTo(o2.getClothing().getSize());
-        }
-    };
+    public static final Comparator<StoreItem> SORT_BY_SIZE =
+            (o1, o2) -> o1.getClothing().getSize().compareTo(o2.getClothing().getSize());
 
     @Override
     public int compareTo(StoreItem other) {
