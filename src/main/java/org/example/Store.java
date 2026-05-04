@@ -118,23 +118,29 @@ public class Store {
     /**
      * Update
      */
-    public boolean update(StoreItem existingObject, StoreItem newObject) {
-        if (existingObject == null || newObject == null) return false;
+    public void update(StoreItem existingObject, StoreItem newObject) {
+        if (existingObject == null || newObject == null) {
+            throw new InvalidClothesDataException("Об'єкти не можуть бути null.");
+        }
 
         int index = items.indexOf(existingObject);
         if (index != -1) {
             items.set(index, newObject);
-            return true;
+        } else {
+            throw new ItemNotFoundException("Помилка: Об'єкт для оновлення не знайдено на складі!");
         }
-        return false;
     }
 
     /**
      * Delete
      */
-    public boolean delete(StoreItem existingObject) {
-        if (existingObject == null) return false;
+    public void delete(StoreItem existingObject) {
+        if (existingObject == null) {
+            throw new InvalidClothesDataException("Об'єкт не може бути null.");
+        }
 
-        return items.remove(existingObject);
+        if (!items.remove(existingObject)) {
+            throw new ItemNotFoundException("Помилка: Об'єкт для видалення не знайдено на складі!");
+        }
     }
 }

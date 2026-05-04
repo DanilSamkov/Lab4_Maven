@@ -30,7 +30,7 @@ public class StoreItem implements Comparable<StoreItem>{
 
     public void setQuantity(int quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException("Кількість товару не може бути від'ємною.");
+            throw new InvalidClothesDataException("Кількість товару не може бути від'ємною.");
         }
         this.quantity = quantity;
     }

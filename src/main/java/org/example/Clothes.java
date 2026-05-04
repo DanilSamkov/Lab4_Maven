@@ -46,7 +46,7 @@ public abstract class Clothes implements Comparable<Clothes>{
      */
     public Clothes(Clothes other) {
         if (other == null) {
-            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
+            throw new InvalidClothesDataException("Об'єкт для копіювання не може бути null.");
         }
 
         this.name = other.name;
@@ -77,7 +77,7 @@ public abstract class Clothes implements Comparable<Clothes>{
 
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Назва не може бути порожньою.");
+            throw new InvalidClothesDataException("Назва не може бути порожньою.");
         }
         this.name = name;
     }
@@ -90,7 +90,7 @@ public abstract class Clothes implements Comparable<Clothes>{
      */
     public void setSize(Size size) {
         if (size == null) {
-            throw new IllegalArgumentException("Розмір не може бути порожнім (null).");
+            throw new InvalidClothesDataException("Розмір не може бути порожнім (null).");
         }
 
         this.size = size;
@@ -102,7 +102,7 @@ public abstract class Clothes implements Comparable<Clothes>{
 
     public void setPrice(double price) {
         if (price < 0) {
-            throw new IllegalArgumentException("Ціна не може бути від'ємною.");
+            throw new InvalidClothesDataException("Ціна не може бути від'ємною.");
         }
         this.price = price;
     }
@@ -113,7 +113,7 @@ public abstract class Clothes implements Comparable<Clothes>{
 
     public void setColor(String color) {
         if (color == null || color.trim().isEmpty()) {
-            throw new IllegalArgumentException("Колір не може бути порожнім.");
+            throw new InvalidClothesDataException("Колір не може бути порожнім.");
         }
         this.color = color;
     }
