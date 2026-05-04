@@ -169,7 +169,7 @@ public class Main {
 
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка вводу: Ціна має бути коректним числом!");
-                    } catch (IllegalArgumentException e) {
+                    } catch (InvalidClothesDataException e) {
                         System.out.println("Помилка збереження даних: " + e.getMessage());
                     }
                     break;
@@ -235,19 +235,15 @@ public class Main {
                         }
 
                         if (changed) {
-                            if (store.update(existingItem, newItem)) {
-                                System.out.println("Об'єкт успішно модифіковано!");
-                            } else {
-                                System.out.println("Помилка: Не вдалося оновити об'єкт.");
-                            }
+                            store.update(existingItem, newItem);
+                            System.out.println("Об'єкт успішно модифіковано!");
                         }
-
+                    } catch (ItemNotFoundException | InvalidClothesDataException e) {
+                        System.out.println(e.getMessage());
                     } catch (NumberFormatException e) {
                         System.out.println("Помилка: Введіть коректне число.");
                     } catch (IndexOutOfBoundsException e) {
                         System.out.println("Помилка: Об'єкта з таким номером не існує.");
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Помилка модифікації: " + e.getMessage());
                     }
                     break;
 
@@ -268,14 +264,13 @@ public class Main {
                         String confirm = scanner.nextLine().trim().toLowerCase();
 
                         if (confirm.equals("т") || confirm.equals("так") || confirm.equals("y") || confirm.equals("yes")) {
-                            if (store.delete(itemToDelete)) {
-                                System.out.println("Об'єкт успішно видалено!");
-                            } else {
-                                System.out.println("Помилка: Об'єкт не знайдено.");
-                            }
+                            store.delete(itemToDelete);
+                            System.out.println("Об'єкт успішно видалено!");
                         } else {
                             System.out.println("Видалення скасовано.");
                         }
+                    } catch (ItemNotFoundException e) {
+                        System.out.println(e.getMessage());
                     } catch (NumberFormatException | IndexOutOfBoundsException e) {
                         System.out.println("Помилка: Некоректний номер об'єкта.");
                     }
