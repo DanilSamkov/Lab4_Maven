@@ -32,15 +32,15 @@ public class ClothesTest {
     void setIllegalExceptionsTest(){
         Clothes item = new BasicClothes("Джинси", Size.S, 900.25, "Синій");
 
-        assertThrows(IllegalArgumentException.class,()->{item.setName("");});
-        assertThrows(IllegalArgumentException.class,()->{item.setColor("");});
-        assertThrows(IllegalArgumentException.class,()->{item.setSize(null);});
-        assertThrows(IllegalArgumentException.class,()->{item.setPrice(-1);});
+        assertThrows(InvalidClothesDataException.class,()->{item.setName("");});
+        assertThrows(InvalidClothesDataException.class,()->{item.setColor("");});
+        assertThrows(InvalidClothesDataException.class,()->{item.setSize(null);});
+        assertThrows(InvalidClothesDataException.class,()->{item.setPrice(-1);});
 
-        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("",Size.M,456.45,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("Капелюх",null,456.45,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("Капелюх",Size.M,-546,"Рожевий");});
-        assertThrows(IllegalArgumentException.class,()->{new BasicClothes("Капелюх",Size.M,456.45,"");});
+        assertThrows(InvalidClothesDataException.class,()->{new BasicClothes("",Size.M,456.45,"Рожевий");});
+        assertThrows(InvalidClothesDataException.class,()->{new BasicClothes("Капелюх",null,456.45,"Рожевий");});
+        assertThrows(InvalidClothesDataException.class,()->{new BasicClothes("Капелюх",Size.M,-546,"Рожевий");});
+        assertThrows(InvalidClothesDataException.class,()->{new BasicClothes("Капелюх",Size.M,456.45,"");});
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ClothesTest {
         assertEquals(original.getPrice(), copy.getPrice());
         assertEquals(original.getColor(), copy.getColor());
 
-        assertThrows(IllegalArgumentException.class,()->{new BasicClothes(null);});
+        assertThrows(InvalidClothesDataException.class,()->{new BasicClothes(null);});
     }
 
     @Test
@@ -256,18 +256,40 @@ public class ClothesTest {
         BasicClothes modifiedClothes = new BasicClothes("Кепка", Size.L, 350.0, "Чорний");
         StoreItem newItem = new StoreItem(modifiedClothes, 15);
 
-        boolean updateResult = store.update(existingItem, newItem);
+        store.update(existingItem, newItem);
 
-        assertTrue(updateResult);
         assertEquals(Size.L, store.getItems().get(0).getClothing().getSize());
         assertEquals(350.0, store.getItems().get(0).getClothing().getPrice());
         assertEquals(15, store.getItems().get(0).getQuantity());
 
-        boolean deleteResult = store.delete(newItem);
+        store.delete(newItem);
 
-        assertTrue(deleteResult);
         assertTrue(store.getItems().isEmpty());
 
-        assertFalse(store.delete(newItem));
+        assertThrows(ItemNotFoundException.class, () -> {
+            store.delete(newItem);
+        });
     }
+
+    @Test
+    void shouldThrowItemNotFoundExceptionWhenDeletingNonExistingObject() {
+        Store store = new Store();
+        StoreItem fakeItem = new StoreItem(new BasicClothes("Куртка", Size.L, 1000.0, "Чорний"), 1);
+
+        assertThrows(ItemNotFoundException.class, () -> {
+            store.delete(fakeItem);
+        });
+    }
+
+    @Test
+    void shouldThrowItemNotFoundExceptionWhenUpdatingNonExistingObject() {
+        Store store = new Store();
+        StoreItem fakeItem = new StoreItem(new Pants("Джинси", Size.M, 800.0, "Синій"), 2);
+        StoreItem updatedItem = new StoreItem(new Pants("Джинси", Size.L, 900.0, "Синій"), 3);
+
+        assertThrows(ItemNotFoundException.class, () -> {
+            store.update(fakeItem, updatedItem);
+        });
+    }
+
 }
