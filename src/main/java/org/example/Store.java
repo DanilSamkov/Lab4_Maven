@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Клас, який володіє колекцією товарів
@@ -79,6 +80,23 @@ public class Store {
             }
         }
         return resultList;
+    }
+
+    /**
+     * Пошук за UUID
+     */
+    public StoreItem searchByUuid(String uuidString) {
+        try {
+            UUID targetUuid = UUID.fromString(uuidString.trim());
+            for (StoreItem item : items) {
+                if (item.getClothing().getUuid().equals(targetUuid)) {
+                    return item;
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        return null;
     }
 
     /**

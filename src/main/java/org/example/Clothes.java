@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.Objects;
+import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -21,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Shorts.class, name = "shorts"),
         @JsonSubTypes.Type(value = Polo.class, name = "polo")
 })
-public abstract class Clothes implements Comparable<Clothes>{
+public abstract class Clothes implements Comparable<Clothes>, Identifiable{
+    private UUID uuid;
     private String name;
     private Size size;
     private double price;
@@ -30,12 +32,15 @@ public abstract class Clothes implements Comparable<Clothes>{
     /**
      * Порожній конструктор
      */
-    public Clothes() {}
+    public Clothes() {
+        this.uuid = UUID.randomUUID();
+    }
 
     /**
      * Основний конструктор.
      */
     public Clothes(String name, Size size, double price, String color) {
+        this.uuid = UUID.randomUUID();
         setName(name);
         setSize(size);
         setPrice(price);
@@ -48,11 +53,20 @@ public abstract class Clothes implements Comparable<Clothes>{
         if (other == null) {
             throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
         }
-
+        this.uuid = UUID.randomUUID();
         this.name = other.name;
         this.size = other.size;
         this.price = other.price;
         this.color = other.color;
+    }
+
+    @Override
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -123,7 +137,8 @@ public abstract class Clothes implements Comparable<Clothes>{
     @Override
     public String toString() {
         return "Clothes{" +
-                "name='" + name + '\'' +
+                "UUID=" + uuid +
+                ", name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
                 ", color='" + color + '\'' +
