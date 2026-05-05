@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.GUIController">
+    <left>
+        <VBox spacing="10" prefWidth="250" style="-fx-background-color: #f4f4f4;">
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+            <Label text="Додати новий товар" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+            <Label text="Тип одягу:"/>
+            <ComboBox fx:id="typeBox" maxWidth="Infinity"/>
+
+            <Label text="Назва:"/>
+            <TextField fx:id="nameField" promptText="Наприклад: Футболка"/>
+
+            <Label text="Розмір:"/>
+            <ComboBox fx:id="sizeBox" maxWidth="Infinity"/>
+
+            <Label text="Колір:"/>
+            <TextField fx:id="colorField" promptText="Колір"/>
+
+            <Label text="Ціна:"/>
+            <TextField fx:id="priceField" promptText="0.0"/>
+
+            <Label text="Кількість:"/>
+            <TextField fx:id="quantityField" promptText="0"/>
+
+            <CheckBox fx:id="swimmingCheckBox" text="Для плавання" managed="false" visible="false"/>
+            <CheckBox fx:id="pocketCheckBox" text="З нагрудною кишенею" managed="false" visible="false"/>
+
+            <Button text="Додати" onAction="#onAddClick" maxWidth="Infinity" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="10">
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+            <Label text="Список товарів (Коротко)" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+            <ListView fx:id="shortInfoListView" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+
+    <right>
+        <VBox spacing="10" prefWidth="280" style="-fx-background-color: #f9f9f9;">
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+            <Label text="Пошук за UUID" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+            <TextField fx:id="uuidSearchField" promptText="Введіть UUID тут..."/>
+            <Button text="Знайти" onAction="#onSearchClick" maxWidth="Infinity" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            <TextArea fx:id="searchResultArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </right>
+</BorderPane>
