@@ -39,8 +39,9 @@ public class Main {
                     System.out.println("1. За назвою");
                     System.out.println("2. За розміром");
                     System.out.println("3. За ціновим діапазоном");
+                    System.out.println("4. За UUID");
                     System.out.println("0. Повернутися до головного меню");
-                    System.out.print("Оберіть критерій (0-3): ");
+                    System.out.print("Оберіть критерій (0-4): ");
 
                     String searchChoice = scanner.nextLine().trim();
                     List<StoreItem> results = null;
@@ -71,6 +72,17 @@ public class Main {
                                 }
                             } catch (NumberFormatException e) {
                                 System.out.println("Помилка: Некоректний формат числа.");
+                            }
+                            break;
+                        case "4":
+                            System.out.print("Введіть UUID: ");
+                            String uuidInput = scanner.nextLine().trim();
+                            StoreItem foundItem = store.searchByUuid(uuidInput);
+                            if (foundItem != null) {
+                                System.out.println("\n--- Знайдено ---");
+                                System.out.println(foundItem.toString());
+                            } else {
+                                System.out.println("Помилка: Об'єкт не знайдено, або введено некоректний формат UUID.");
                             }
                             break;
                         case "0":

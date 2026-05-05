@@ -244,4 +244,27 @@ public class ClothesTest {
         assertEquals(Size.S, sortedBySize.get(0).getClothing().getSize());
         assertEquals(Size.XXL, sortedBySize.get(2).getClothing().getSize());
     }
+
+    @Test
+    void uuidGenerationAndSearchTest() {
+        Store store = new Store();
+        BasicClothes shirt = new BasicClothes("Худі", Size.L, 1000.0, "Чорний");
+
+        assertNotNull(shirt.getUuid());
+
+        store.addNewClothes(shirt, 5);
+        String correctUuidString = shirt.getUuid().toString();
+
+        StoreItem foundItem = store.searchByUuid(correctUuidString);
+        assertNotNull(foundItem);
+        assertEquals("Худі", foundItem.getClothing().getName());
+        assertEquals(correctUuidString, foundItem.getClothing().getUuid().toString());
+
+        String fakeUuidString = java.util.UUID.randomUUID().toString();
+        StoreItem notFoundItem = store.searchByUuid(fakeUuidString);
+        assertNull(notFoundItem);
+
+        StoreItem invalidFormatItem = store.searchByUuid("це-не-uuid-зовсім-123");
+        assertNull(invalidFormatItem);
+    }
 }
